@@ -1,17 +1,17 @@
 {
+  "author": "Nick",
+  "name": "SoloGrind",
+  "repoUrl": "https://github.com/ngehr/sologrind-plugin.git",
+  "description": "Gamification",
+  "enableOnMobile": false,
+  "id": "Nick-h89enmi",
   "manifestVersion": 1,
-  "id": "plugin_template",
-  "name": "Plugin Template",
-  "author": "remnote",
-  "repoUrl": "",
+  "unlisted": true,
   "version": {
     "major": 0,
     "minor": 0,
     "patch": 1
   },
-  "theme": [],
-  "enableOnMobile": false,
-  "description": "",
   "requestNative": false,
   "requiredScopes": [
     {
