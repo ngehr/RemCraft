@@ -1,4 +1,4 @@
-# SoloGrind - WoW Gamification
+# World of Remcraft - Remnote Plugin for Gamification
 
 Gamifies studying with Remnote
 
