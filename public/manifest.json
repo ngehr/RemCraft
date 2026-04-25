@@ -1,10 +1,10 @@
 {
   "author": "Nick",
   "name": "SoloGrind",
-  "repoUrl": "https://github.com/ngehr/sologrind-plugin.git",
+  "repoUrl": "https://github.com/ngehr/world-of-remcraft.git",
   "description": "Gamification",
   "enableOnMobile": false,
-  "id": "Nick-h89enmi",
+  "id": "WorldOfRemcraft",
   "manifestVersion": 1,
   "unlisted": true,
   "version": {

@@ -519,11 +519,6 @@ async function settleCompletedQuests(
       questLog.dailies = [nextQuest];
       questLog.lastDailyTitles = pushQuestHistory(questLog.lastDailyTitles, nextQuest.title);
       await plugin.app.toast(`🗺️ New daily quest: ${nextQuest.title}`);
-    } else {
-      const nextQuest = pickQuest(WEEKLY_QUEST_POOL, questLog.lastWeeklyTitles, 'weekly');
-      questLog.weeklies = [nextQuest];
-      questLog.lastWeeklyTitles = pushQuestHistory(questLog.lastWeeklyTitles, nextQuest.title);
-      await plugin.app.toast(`🏆 New weekly quest: ${nextQuest.title}`);
     }
   }
 
