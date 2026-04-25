@@ -191,7 +191,7 @@ const ZONES: ZoneConfig[] = [
   },
   {
     id: 'stv_north',
-    name: 'Stranglethorn Vale (Nord)',
+    name: 'Stranglethorn Vale (North)',
     minLevel: 30,
     maxLevel: 35,
     normalMobs: [
@@ -210,7 +210,7 @@ const ZONES: ZoneConfig[] = [
   },
   {
     id: 'stv_south',
-    name: 'Stranglethorn Vale (Süd)',
+    name: 'Stranglethorn Vale (South)',
     minLevel: 35,
     maxLevel: 45,
     normalMobs: [

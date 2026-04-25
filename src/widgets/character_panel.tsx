@@ -85,7 +85,7 @@ interface QuestLogState {
   lastWeeklyTitles: string[];
 }
 
-type PanelTab = 'overview' | 'shop' | 'stats';
+type PanelTab = 'overview' | 'shop' | 'stats' | 'help';
 
 const RESTED_XP_CARDS = 50;
 const ELITE_EVERY = 7;
@@ -94,8 +94,8 @@ const SHOP_ITEMS: ShopItem[] = [
   { id: 'bandage', name: 'Bandage', description: '+10 HP', costSilver: 3, type: 'heal_small', value: 10 },
   { id: 'heal_small', name: 'Small Healing Potion', description: '+25 HP', costSilver: 6, type: 'heal_small', value: 25 },
   { id: 'heal_large', name: 'Large Healing Potion', description: '+60 HP', costGold: 2, type: 'heal_large', value: 60 },
-  { id: 'xp_scroll', name: 'Scroll of Knowledge', description: '2× XP für 20 Karten', costGold: 3, type: 'xp_scroll', value: 20 },
-  { id: 'dmg_scroll', name: 'Scroll of Fury', description: '2× Schaden für 10 Karten', costGold: 2, type: 'dmg_scroll', value: 10 },
+  { id: 'xp_scroll', name: 'Scroll of Knowledge', description: '2× XP for 20 cards', costGold: 3, type: 'xp_scroll', value: 20 },
+  { id: 'dmg_scroll', name: 'Scroll of Fury', description: '2× Damage for 10 cards', costGold: 2, type: 'dmg_scroll', value: 10 },
 ];
 
 const defaultCharacter: CharacterState = {
@@ -154,7 +154,7 @@ function getNextMilestones(char: CharacterState): string[] {
   msgs.push(`⚔️ Level-Up in ~${estCards} cards`);
 
   const nextElite = ELITE_EVERY - (char.monstersDefeated % ELITE_EVERY || ELITE_EVERY);
-  msgs.push(`⭐ Next Elite in ${nextElite} Kill${nextElite === 1 ? '' : 's'}`);
+  msgs.push(`⭐ Nächstes Elite in ${nextElite} Kill${nextElite === 1 ? '' : 's'}`);
 
   const restedLeft = Math.max(0, RESTED_XP_CARDS - char.restedXPUsed);
   if (restedLeft > 0) msgs.push(`💤 Rested XP: ${restedLeft} cards`);
@@ -333,10 +333,11 @@ function CharacterPanel() {
           {character.activeDamageCards > 0 && <span style={{ color: '#f97373' }}>💢 DMG×{character.activeDamageCards}</span>}
         </div>
 
-        <div style={{ display: 'flex', gap: '6px', marginBottom: '8px' }}>
+        <div style={{ display: 'flex', gap: '4px', marginBottom: '8px' }}>
           <button onClick={() => setActiveTab('overview')} style={tabButton(activeTab === 'overview')}>Overview</button>
           <button onClick={() => setActiveTab('shop')} style={tabButton(activeTab === 'shop')}>Shop</button>
           <button onClick={() => setActiveTab('stats')} style={tabButton(activeTab === 'stats')}>Stats</button>
+          <button onClick={() => setActiveTab('help')} style={tabButton(activeTab === 'help')}>Help</button>
         </div>
 
         {activeTab === 'overview' && (
@@ -472,6 +473,27 @@ function CharacterPanel() {
             </div>
           </div>
         )}
+
+        {activeTab === 'help' && (
+          <div style={{ padding: '8px', background: '#0c0c1a', borderRadius: '8px', border: '1px solid #3a2b18', marginBottom: '8px' }}>
+            <div style={{ fontSize: '11px', color: '#c79c6e', fontWeight: 700, marginBottom: '6px' }}>📖 Quick Guide</div>
+            <div style={{ display: 'grid', gap: '4px', fontSize: '9px', color: '#b0a090', lineHeight: '1.45' }}>
+              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>⚔️ Fight:</span> each reviewed card deals 1 damage.</div>
+              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>✅ Good/Easy:</span> full XP, no damage taken.</div>
+              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>🟡 Hard:</span> 40% XP, take normal enemy damage.</div>
+              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>❌ Again:</span> no XP, take double damage.</div>
+              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>💥 Crit:</span> 5 Good/Easy in a row = next hit deals 2× damage.</div>
+              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>⭐ Elites:</span> every 7th kill, stronger enemy, rewards gold.</div>
+              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>💤 Rested:</span> first 50 daily cards give 2× XP.</div>
+              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>🔥 Streak:</span> study daily; dying resets streak and sets HP to 20.</div>
+              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>🏪 Shop:</span> silver = healing, gold = big items and scrolls.</div>
+              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>📜 Scrolls:</span> XP Scroll = 20 cards, Damage Scroll = 10 cards.</div>
+              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>🗺️ Quests:</span> 1 daily + 1 weekly active at all times.</div>
+              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>🌍 Zones:</span> level up to move through Azeroth zones.</div>
+            </div>
+          </div>
+        )}
+
 
         <button
           onClick={handleReset}
