@@ -6,7 +6,7 @@
   "enableOnMobile": false,
   "id": "WorldOfRemcraft",
   "manifestVersion": 1,
-  "unlisted": true,
+  "unlisted": false,
   "version": {
     "major": 0,
     "minor": 0,
