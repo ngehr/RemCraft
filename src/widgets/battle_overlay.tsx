@@ -106,191 +106,212 @@ function BattleOverlay() {
   return (
     <div
       style={{
-        background: 'rgba(5,5,12,0.96)',
-        borderRadius: '10px',
-        border: '1px solid #705030',
-        boxShadow: '0 0 16px rgba(0,0,0,0.8)',
-        padding: '10px 14px',
-        fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-        color: '#f3f3f3',
-        width: '300px',
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        padding: '10px 12px',
+        boxSizing: 'border-box',
+        background: '#2e2e34',
       }}
     >
       <div
         style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          borderBottom: '1px solid #705030',
-          paddingBottom: '4px',
-          marginBottom: '8px',
+          background: 'rgba(12,12,18,0.96)',
+          borderRadius: '12px',
+          border: '1px solid #705030',
+          boxShadow: '0 0 18px rgba(0,0,0,0.72)',
+          padding: '10px 14px',
+          fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+          color: '#f3f3f3',
+          width: '100%',
+          maxWidth: '620px',
+          boxSizing: 'border-box',
         }}
       >
         <div
           style={{
-            fontSize: '10px',
-            color: '#c79c6e',
-            textTransform: 'uppercase',
-            letterSpacing: '0.1em',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '16px',
+            width: '100%',
+            overflow: 'hidden',
           }}
         >
-          {enemy.zoneName}
-        </div>
-        <div style={{ display: 'flex', gap: '6px', fontSize: '10px' }}>
-          {character.streakDays > 1 && (
-            <span style={{ color: '#fb923c' }}>🔥 {character.streakDays}d</span>
-          )}
-          {restedLeft > 0 && (
-            <span style={{ color: '#93c5fd' }}>💤 {restedLeft}</span>
-          )}
-          {character.activeScrollCards > 0 && (
-            <span style={{ color: '#60a5fa' }}>📜 {character.activeScrollCards}</span>
-          )}
-          {character.activeDamageCards > 0 && (
-            <span style={{ color: '#f97373' }}>💢 {character.activeDamageCards}</span>
-          )}
-        </div>
-      </div>
-
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '12px',
-          marginBottom: '10px',
-        }}
-      >
-        <div style={{ flexShrink: 0, textAlign: 'center' }}>
-          {enemy.imageKey ? (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              flex: 1,
+              minWidth: 0,
+            }}
+          >
             <img
-              src={`${rootURL}mobs/${enemy.imageKey}.png`}
-              alt={enemy.name}
+              src={getCharacterSprite(rootURL, level)}
+              alt="Character"
               style={{
                 width: '64px',
                 height: '64px',
                 imageRendering: 'pixelated',
                 borderRadius: '6px',
                 border: '1px solid #705030',
+                flexShrink: 0,
               }}
               onError={(e) => {
-                (e.target as HTMLImageElement).outerHTML = `<span style="font-size:40px">${enemy.emoji}</span>`;
+                (e.target as HTMLImageElement).outerHTML =
+                  '<span style="font-size:28px">🧙</span>';
               }}
             />
-          ) : (
-            <span style={{ fontSize: '40px' }}>{enemy.emoji}</span>
-          )}
-        </div>
-        <div style={{ flex: 1 }}>
-          <div
-            style={{
-              fontWeight: 700,
-              fontSize: '13px',
-              color: enemy.elite ? '#ff5555' : '#ffd27f',
-              textShadow: '0 0 4px #000',
-              marginBottom: '4px',
-            }}
-          >
-            {enemy.name}
-          </div>
-          <div
-            style={{
-              background: '#3a0000',
-              borderRadius: '3px',
-              height: '8px',
-              boxShadow: 'inset 0 0 4px #000',
-            }}
-          >
-            <div
-              style={{
-                width: `${hpPct}%`,
-                background: enemy.elite
-                  ? 'linear-gradient(90deg,#7f1d1d,#ef4444)'
-                  : 'linear-gradient(90deg,#b91c1c,#f97373)',
-                borderRadius: '3px',
-                height: '100%',
-                transition: 'width 0.2s',
-              }}
-            />
-          </div>
-          <div style={{ fontSize: '10px', color: '#c0c0c0', marginTop: '2px' }}>
-            ❤️ {Math.max(0, enemy.currentHP)}/{enemy.maxHP} · ⚔️ {enemy.damage} damage
-          </div>
-        </div>
-      </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div
+                style={{
+                  fontSize: '12px',
+                  color: '#c79c6e',
+                  fontWeight: 700,
+                  lineHeight: 1.2,
+                }}
+              >
+                Lvl {level}
+                {restedLeft > 0 && (
+                  <span style={{ color: '#93c5fd', marginLeft: '8px', fontSize: '10px' }}>
+                    💤 {restedLeft}
+                  </span>
+                )}
+              </div>
 
-      <div
-        style={{
-          borderTop: '1px solid #705030',
-          margin: '6px 0',
-        }}
-      />
+              <div
+                style={{
+                  background: '#3a0000',
+                  borderRadius: '4px',
+                  height: '6px',
+                  marginTop: '4px',
+                }}
+              >
+                <div
+                  style={{
+                    width: `${charHpPct}%`,
+                    background: `linear-gradient(90deg,#7f1d1d,${hpColor})`,
+                    borderRadius: '4px',
+                    height: '100%',
+                    transition: 'width 0.2s',
+                  }}
+                />
+              </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <img
-          src={getCharacterSprite(rootURL, level)}
-          alt="Character"
-          style={{
-            width: '36px',
-            height: '36px',
-            imageRendering: 'pixelated',
-            borderRadius: '4px',
-            border: '1px solid #705030',
-            flexShrink: 0,
-          }}
-          onError={(e) => {
-            (e.target as HTMLImageElement).outerHTML = '<span style="font-size:20px">🧙</span>';
-          }}
-        />
-        <div style={{ flex: 1 }}>
+              <div style={{ fontSize: '10px', color: hpColor, marginTop: '4px' }}>
+                ❤️ {character.hp}/{character.maxHp}
+              </div>
+
+              <div
+                style={{
+                  background: '#333',
+                  borderRadius: '4px',
+                  height: '6px',
+                  marginTop: '5px',
+                }}
+              >
+                <div
+                  style={{
+                    width: `${xpPct}%`,
+                    background: 'linear-gradient(90deg,#503b9a,#8c63ff)',
+                    borderRadius: '4px',
+                    height: '100%',
+                    transition: 'width 0.3s',
+                  }}
+                />
+              </div>
+
+              <div style={{ fontSize: '10px', color: '#8a8a93', marginTop: '4px' }}>
+                🥈 {character.silver} · 🥇 {character.gold}
+              </div>
+            </div>
+          </div>
+
           <div
             style={{
-              fontSize: '11px',
-              color: '#c79c6e',
-              fontWeight: 600,
+              width: '1px',
+              alignSelf: 'stretch',
+              background: '#705030',
+              flexShrink: 0,
             }}
-          >
-            Level {level}
-          </div>
+          />
+
           <div
             style={{
-              background: '#3a0000',
-              borderRadius: '3px',
-              height: '5px',
-              marginTop: '2px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              flex: 1,
+              minWidth: 0,
             }}
           >
-            <div
-              style={{
-                width: `${charHpPct}%`,
-                background: `linear-gradient(90deg,#7f1d1d,${hpColor})`,
-                borderRadius: '3px',
-                height: '100%',
-                transition: 'width 0.2s',
-              }}
-            />
-          </div>
-          <div style={{ fontSize: '9px', color: hpColor, marginTop: '1px' }}>
-            ❤️ {character.hp}/{character.maxHp}
-          </div>
-          <div
-            style={{
-              background: '#333',
-              borderRadius: '3px',
-              height: '4px',
-              marginTop: '3px',
-            }}
-          >
-            <div
-              style={{
-                width: `${xpPct}%`,
-                background: 'linear-gradient(90deg,#503b9a,#8c63ff)',
-                borderRadius: '3px',
-                height: '100%',
-                transition: 'width 0.3s',
-              }}
-            />
-          </div>
-          <div style={{ fontSize: '9px', color: '#777', marginTop: '1px' }}>
-            ⚰️ {character.monstersDefeated} · 🥈 {character.silver} · 🥇 {character.gold}
+            {enemy.imageKey ? (
+              <img
+                src={`${rootURL}mobs/${enemy.imageKey}.png`}
+                alt={enemy.name}
+                style={{
+                  width: '64px',
+                  height: '64px',
+                  imageRendering: 'pixelated',
+                  borderRadius: '6px',
+                  border: '1px solid #705030',
+                  flexShrink: 0,
+                }}
+                onError={(e) => {
+                  (e.target as HTMLImageElement).outerHTML =
+                    `<span style="font-size:28px">${enemy.emoji}</span>`;
+                }}
+              />
+            ) : (
+              <span style={{ fontSize: '28px', flexShrink: 0 }}>{enemy.emoji}</span>
+            )}
+
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div
+                style={{
+                  fontWeight: 700,
+                  fontSize: '12px',
+                  color: enemy.elite ? '#ff5555' : '#ffd27f',
+                  textShadow: '0 0 4px #000',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  lineHeight: 1.2,
+                }}
+              >
+                {enemy.name}
+              </div>
+
+              <div
+                style={{
+                  background: '#3a0000',
+                  borderRadius: '4px',
+                  height: '6px',
+                  marginTop: '4px',
+                  boxShadow: 'inset 0 0 4px #000',
+                }}
+              >
+                <div
+                  style={{
+                    width: `${hpPct}%`,
+                    background: enemy.elite
+                      ? 'linear-gradient(90deg,#7f1d1d,#ef4444)'
+                      : 'linear-gradient(90deg,#b91c1c,#f97373)',
+                    borderRadius: '4px',
+                    height: '100%',
+                    transition: 'width 0.2s',
+                  }}
+                />
+              </div>
+
+              <div style={{ fontSize: '10px', color: '#d0d0d5', marginTop: '4px' }}>
+                ❤️ {Math.max(0, enemy.currentHP)}/{enemy.maxHP} · ⚔️ {enemy.damage} dmg
+              </div>
+
+              <div style={{ fontSize: '10px', color: '#8a8a93', marginTop: '4px' }}>
+                ⚰️ {character.monstersDefeated} kills · {enemy.zoneName}
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -1,16 +1,16 @@
 {
   "author": "Nick",
-  "name": "SoloGrind",
-  "repoUrl": "https://github.com/ngehr/world-of-remcraft.git",
+  "name": "RemCraft",
+  "repoUrl": "https://github.com/ngehr/RemCraft",
   "description": "Gamification",
   "enableOnMobile": false,
-  "id": "WorldOfRemcraft",
+  "id": "RemCraft",
   "manifestVersion": 1,
   "unlisted": false,
   "version": {
-    "major": 0,
+    "major": 1,
     "minor": 0,
-    "patch": 1
+    "patch": 0
   },
   "requestNative": false,
   "requiredScopes": [

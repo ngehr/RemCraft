@@ -288,38 +288,38 @@ const ZONES: ZoneConfig[] = [
 ];
 
 const DAILY_QUEST_POOL: QuestTemplate[] = [
-  { title: 'First Patrol', description: 'Answer 20 cards.', type: 'reviews_total', target: 20, rewardSilver: 6, rewardXP: 65 },
-  { title: 'Long Session', description: 'Answer 35 cards.', type: 'reviews_total', target: 35, rewardSilver: 10, rewardXP: 100 },
-  { title: 'Clean Hits', description: 'Get 12 Good/Easy answers.', type: 'good_easy_total', target: 12, rewardSilver: 7, rewardXP: 70 },
-  { title: 'Steady Run', description: 'Complete 18 answers without Again.', type: 'no_again_total', target: 18, rewardSilver: 10, rewardXP: 95 },
-  { title: 'Forest Hunter', description: 'Defeat 4 enemies.', type: 'kill_total', target: 4, rewardSilver: 8, rewardXP: 80 },
-  { title: 'Bounty Hunter', description: 'Defeat 6 enemies.', type: 'kill_total', target: 6, rewardSilver: 11, rewardXP: 105 },
-  { title: 'Hard Lesson', description: 'Complete 8 Hard answers.', type: 'hard_total', target: 8, rewardSilver: 12, rewardXP: 105 },
-  { title: 'Critical Chain', description: 'Land 2 critical hits.', type: 'critical_hits_total', target: 2, rewardSilver: 10, rewardXP: 95 },
-  { title: 'Tough Survivor', description: 'Take 10 damage.', type: 'take_damage_total', target: 10, rewardSilver: 12, rewardXP: 105 },
-  { title: 'Silver Purse', description: 'Collect 8 silver.', type: 'silver_total', target: 8, rewardSilver: 7, rewardXP: 75 },
-  { title: 'Gold Seeker', description: 'Loot 1 gold.', type: 'gold_total', target: 1, rewardSilver: 6, rewardGold: 1, rewardXP: 80 },
-  { title: 'Recovery', description: 'Restore a total of 30 HP in the shop.', type: 'heal_total', target: 30, rewardSilver: 10, rewardXP: 95 },
-  { title: 'Thirst for Knowledge', description: 'Use 1 XP scroll.', type: 'use_xp_scroll_total', target: 1, rewardSilver: 12, rewardXP: 100 },
-  { title: 'Battle Hunger', description: 'Use 1 damage scroll.', type: 'use_dmg_scroll_total', target: 1, rewardSilver: 12, rewardXP: 100 },
-  { title: 'Camp Expenses', description: 'Spend 8 silver in the shop.', type: 'spend_silver_total', target: 8, rewardSilver: 11, rewardXP: 95 },
+  { title: 'First Patrol', description: 'Answer 20 cards.', type: 'reviews_total', target: 20, rewardSilver: 8, rewardXP: 80 },
+  { title: 'Long Session', description: 'Answer 35 cards.', type: 'reviews_total', target: 35, rewardSilver: 12, rewardXP: 120 },
+  { title: 'Clean Hits', description: 'Get 12 Good/Easy answers.', type: 'good_easy_total', target: 12, rewardSilver: 10, rewardXP: 100 },
+  { title: 'Steady Run', description: 'Complete 18 answers without Again.', type: 'no_again_total', target: 18, rewardSilver: 10, rewardXP: 100 },
+  { title: 'Forest Hunter', description: 'Defeat 4 enemies.', type: 'kill_total', target: 4, rewardSilver: 6, rewardXP: 70 },
+  { title: 'Bounty Hunter', description: 'Defeat 6 enemies.', type: 'kill_total', target: 6, rewardSilver: 9, rewardXP: 90 },
+  { title: 'Hard Lesson', description: 'Complete 8 Hard answers.', type: 'hard_total', target: 8, rewardSilver: 8, rewardXP: 80 },
+  { title: 'Critical Chain', description: 'Land 2 critical hits.', type: 'critical_hits_total', target: 2, rewardSilver: 7, rewardXP: 90 },
+  { title: 'Tough Survivor', description: 'Take 10 damage.', type: 'take_damage_total', target: 10, rewardSilver: 8, rewardXP: 80 },
+  { title: 'Silver Purse', description: 'Collect 8 silver.', type: 'silver_total', target: 8, rewardSilver: 4, rewardXP: 60 },
+  { title: 'Gold Seeker', description: 'Loot 1 gold.', type: 'gold_total', target: 1, rewardSilver: 5, rewardGold: 1, rewardXP: 80 },
+  { title: 'Recovery', description: 'Restore a total of 30 HP in the shop.', type: 'heal_total', target: 30, rewardSilver: 6, rewardXP: 70 },
+  { title: 'Thirst for Knowledge', description: 'Use 1 XP scroll.', type: 'use_xp_scroll_total', target: 1, rewardSilver: 5, rewardXP: 70 },
+  { title: 'Battle Hunger', description: 'Use 1 damage scroll.', type: 'use_dmg_scroll_total', target: 1, rewardSilver: 5, rewardXP: 70 },
+  { title: 'Camp Expenses', description: 'Spend 8 silver in the shop.', type: 'spend_silver_total', target: 8, rewardSilver: 5, rewardXP: 60 },
 ];
 
 const WEEKLY_QUEST_POOL: QuestTemplate[] = [
-  { title: 'Hero of the Week', description: 'Answer 120 cards.', type: 'reviews_total', target: 120, rewardSilver: 24, rewardGold: 2, rewardXP: 240 },
+  { title: 'Hero of the Week', description: 'Answer 120 cards.', type: 'reviews_total', target: 120, rewardSilver: 30, rewardGold: 2, rewardXP: 280 },
   { title: 'Marathon', description: 'Answer 180 cards.', type: 'reviews_total', target: 180, rewardSilver: 34, rewardGold: 3, rewardXP: 320 },
-  { title: 'Consistency', description: 'Get 90 Good/Easy answers.', type: 'good_easy_total', target: 90, rewardSilver: 24, rewardGold: 2, rewardXP: 245 },
-  { title: 'No Missteps', description: 'Complete 70 answers without Again.', type: 'no_again_total', target: 70, rewardSilver: 26, rewardGold: 2, rewardXP: 260 },
-  { title: 'Elite Hunter', description: 'Defeat 4 elite enemies.', type: 'elite_total', target: 4, rewardSilver: 20, rewardGold: 2, rewardXP: 220 },
-  { title: 'Monster Hunter', description: 'Defeat 24 enemies.', type: 'kill_total', target: 24, rewardSilver: 28, rewardGold: 2, rewardXP: 280 },
-  { title: 'Pain Pay', description: 'Take 45 damage.', type: 'take_damage_total', target: 45, rewardSilver: 28, rewardGold: 2, rewardXP: 290 },
+  { title: 'Consistency', description: 'Get 90 Good/Easy answers.', type: 'good_easy_total', target: 90, rewardSilver: 28, rewardGold: 2, rewardXP: 260 },
+  { title: 'No Missteps', description: 'Complete 70 answers without Again.', type: 'no_again_total', target: 70, rewardSilver: 28, rewardGold: 2, rewardXP: 260 },
+  { title: 'Elite Hunter', description: 'Defeat 4 elite enemies.', type: 'elite_total', target: 4, rewardSilver: 20, rewardGold: 3, rewardXP: 300 },
+  { title: 'Monster Hunter', description: 'Defeat 24 enemies.', type: 'kill_total', target: 24, rewardSilver: 25, rewardGold: 2, rewardXP: 250 },
+  { title: 'Pain Pay', description: 'Take 45 damage.', type: 'take_damage_total', target: 45, rewardSilver: 22, rewardGold: 1, rewardXP: 220 },
   { title: 'Shop Veteran', description: 'Spend 30 silver in the shop.', type: 'spend_silver_total', target: 30, rewardSilver: 30, rewardGold: 2, rewardXP: 290 },
-  { title: 'Arcane Stockpile', description: 'Use 2 XP scrolls.', type: 'use_xp_scroll_total', target: 2, rewardSilver: 30, rewardGold: 3, rewardXP: 310 },
-  { title: 'Berserker Week', description: 'Use 2 damage scrolls.', type: 'use_dmg_scroll_total', target: 2, rewardSilver: 30, rewardGold: 3, rewardXP: 310 },
-  { title: 'Supply Line', description: 'Restore a total of 100 HP.', type: 'heal_total', target: 100, rewardSilver: 30, rewardGold: 2, rewardXP: 295 },
-  { title: 'Gold Reserve', description: 'Loot 5 gold.', type: 'gold_total', target: 5, rewardSilver: 24, rewardGold: 2, rewardXP: 250 },
-  { title: 'Hard Training', description: 'Complete 30 Hard answers.', type: 'hard_total', target: 30, rewardSilver: 28, rewardGold: 2, rewardXP: 290 },
-  { title: 'Critical Style', description: 'Land 8 critical hits.', type: 'critical_hits_total', target: 8, rewardSilver: 26, rewardGold: 2, rewardXP: 270 },
+  { title: 'Arcane Stockpile', description: 'Use 2 XP scrolls.', type: 'use_xp_scroll_total', target: 2, rewardSilver: 20, rewardGold: 2, rewardXP: 240 },
+  { title: 'Berserker Week', description: 'Use 2 damage scrolls.', type: 'use_dmg_scroll_total', target: 2, rewardSilver: 20, rewardGold: 2, rewardXP: 240 },
+  { title: 'Supply Line', description: 'Restore a total of 100 HP.', type: 'heal_total', target: 100, rewardSilver: 22, rewardGold: 1, rewardXP: 220 },
+  { title: 'Gold Reserve', description: 'Loot 5 gold.', type: 'gold_total', target: 5, rewardSilver: 15, rewardGold: 3, rewardXP: 270 },
+  { title: 'Hard Training', description: 'Complete 30 Hard answers.', type: 'hard_total', target: 30, rewardSilver: 24, rewardGold: 1, rewardXP: 230 },
+  { title: 'Critical Style', description: 'Land 8 critical hits.', type: 'critical_hits_total', target: 8, rewardSilver: 26, rewardGold: 2, rewardXP: 260 },
 ];
 
 function getZoneForLevel(level: number): ZoneConfig {
@@ -340,13 +340,11 @@ function getTodayISO(): string {
   return new Date().toISOString().split('T')[0];
 }
 
-function getWeekKey(d = new Date()): string {
-  const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-  const dayNum = date.getUTCDay() || 7;
-  date.setUTCDate(date.getUTCDate() + 4 - dayNum);
-  const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
-  const weekNo = Math.ceil((((date.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
-  return `${date.getUTCFullYear()}-W${String(weekNo).padStart(2, '0')}`;
+function getWeekKey(): string {
+  const now = new Date();
+  const jan1 = new Date(now.getFullYear(), 0, 1);
+  const week = Math.ceil(((now.getTime() - jan1.getTime()) / 86400000 + jan1.getDay() + 1) / 7);
+  return `${now.getFullYear()}-W${week}`;
 }
 
 function generateEnemy(playerLevel: number, elite: boolean, zone?: ZoneConfig): EnemyState {
@@ -360,7 +358,6 @@ function generateEnemy(playerLevel: number, elite: boolean, zone?: ZoneConfig): 
   const dmgMin = elite ? 5 : 2;
   const dmgMax = elite ? Math.min(12, 4 + Math.floor(lvl * 0.15)) : Math.min(6, 2 + Math.floor(lvl * 0.08));
   const damage = dmgMin + Math.floor(Math.random() * (dmgMax - dmgMin + 1));
-
   return {
     id: `${z.id}_${elite ? 'elite' : 'mob'}_${Date.now()}`,
     name: elite ? `${base.name} (Elite)` : base.name,
@@ -375,54 +372,40 @@ function generateEnemy(playerLevel: number, elite: boolean, zone?: ZoneConfig): 
   };
 }
 
-const defaultCharacter: CharacterState = {
-  level: 1,
-  currentXP: 0,
-  totalXP: 0,
-  cardsAnswered: 0,
-  monstersDefeated: 0,
-  elitesDefeated: 0,
-  hp: 100,
-  maxHp: 100,
-  silver: 0,
-  gold: 0,
-  streakDays: 0,
-  lastActiveDate: '',
-  restedXPUsed: 0,
-  activeScrollCards: 0,
-  activeDamageCards: 0,
-  goodStreak: 0,
-};
-
-function pushQuestHistory(history: string[], title: string): string[] {
-  const next = [title, ...history.filter((h) => h !== title)];
-  return next.slice(0, QUEST_HISTORY_LIMIT);
-}
-
-function createQuest(scope: 'daily' | 'weekly', template: QuestTemplate): QuestState {
+function pickQuest(pool: QuestTemplate[], history: string[], scope: 'daily' | 'weekly'): QuestState {
+  const recent = new Set(history.slice(-QUEST_HISTORY_LIMIT));
+  const candidates = pool.filter((q) => !recent.has(q.title));
+  const template = candidates.length > 0
+    ? candidates[Math.floor(Math.random() * candidates.length)]
+    : pool[Math.floor(Math.random() * pool.length)];
   return {
-    ...template,
-    id: `${scope}_${template.type}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+    id: `${scope}_${template.title.replace(/\s+/g, '_')}_${Date.now()}`,
+    title: template.title,
+    description: template.description,
+    type: template.type,
+    target: template.target,
     progress: 0,
     completed: false,
+    rewardSilver: template.rewardSilver,
+    rewardGold: template.rewardGold,
+    rewardXP: template.rewardXP,
     scope,
-    createdAt: new Date().toISOString(),
+    createdAt: getTodayISO(),
   };
 }
 
-function pickQuest(pool: QuestTemplate[], recentTitles: string[], scope: 'daily' | 'weekly'): QuestState {
-  const filtered = pool.filter((q) => !recentTitles.includes(q.title));
-  const source = filtered.length > 0 ? filtered : pool;
-  const selected = source[Math.floor(Math.random() * source.length)];
-  return createQuest(scope, selected);
+function pushQuestHistory(history: string[], title: string): string[] {
+  return [...history, title].slice(-QUEST_HISTORY_LIMIT * 2);
 }
 
 function getDefaultQuestLog(): QuestLogState {
+  const today = getTodayISO();
+  const weekKey = getWeekKey();
   const daily = pickQuest(DAILY_QUEST_POOL, [], 'daily');
   const weekly = pickQuest(WEEKLY_QUEST_POOL, [], 'weekly');
   return {
-    dailyDate: getTodayISO(),
-    weeklyKey: getWeekKey(),
+    dailyDate: today,
+    weeklyKey: weekKey,
     dailies: [daily],
     weeklies: [weekly],
     lastDailyTitles: [daily.title],
@@ -520,12 +503,32 @@ async function settleCompletedQuests(
       questLog.lastDailyTitles = pushQuestHistory(questLog.lastDailyTitles, nextQuest.title);
       await plugin.app.toast(`🗺️ New daily quest: ${nextQuest.title}`);
     }
+    // Weekly: stays completed until next weeklyKey reset — no immediate replacement
   }
 
   if (changed) {
     await plugin.storage.setSynced('claimedQuestRewards', claimed);
   }
 }
+
+const defaultCharacter: CharacterState = {
+  level: 1,
+  currentXP: 0,
+  totalXP: 0,
+  cardsAnswered: 0,
+  monstersDefeated: 0,
+  elitesDefeated: 0,
+  hp: 100,
+  maxHp: 100,
+  silver: 0,
+  gold: 0,
+  streakDays: 0,
+  lastActiveDate: '',
+  restedXPUsed: 0,
+  activeScrollCards: 0,
+  activeDamageCards: 0,
+  goodStreak: 0,
+};
 
 async function onActivate(plugin: ReactRNPlugin) {
   const storedChar = (await plugin.storage.getSynced('character')) as any;
@@ -537,25 +540,22 @@ async function onActivate(plugin: ReactRNPlugin) {
   const questsRaw = (await plugin.storage.getSynced('questLog')) as Partial<QuestLogState> | undefined;
   await plugin.storage.setSynced('questLog', ensureQuestLog(questsRaw));
 
-  await plugin.app.registerWidget('character_panel', WidgetLocation.RightSidebar, {
-    dimensions: { height: 'auto', width: '100%' },
-    widgetTabIcon: `${plugin.rootURL ?? ''}ui/sidebar_icon.png`,
-    widgetTabTitle: 'World of Remcraft',
-  });
+await plugin.app.registerWidget('character_panel', WidgetLocation.RightSidebar, {
+  dimensions: { height: 'auto', width: '100%' },
+  widgetTabIcon: `${plugin.rootURL ?? ''}ui/sidebar_icon.png`,
+  widgetTabTitle: 'World of Remcraft',
+});
 
-  await plugin.app.registerWidget('battle_overlay', WidgetLocation.FloatingWidget, {
-    dimensions: { height: 'auto', width: '320px' },
-  });
+await plugin.app.registerWidget('battle_overlay', 'FlashcardUnder' as WidgetLocation, {
+  dimensions: { height: 'auto', width: '100%' },
+});
 
   await plugin.event.addListener(
     AppEvents.QueueCompleteCard,
     undefined,
     async (event: any) => {
       const stored = (await plugin.storage.getSynced('character')) as Partial<CharacterState> | undefined;
-      const char: CharacterState = {
-        ...defaultCharacter,
-        ...(stored ?? {}),
-      };
+      const char: CharacterState = { ...defaultCharacter, ...(stored ?? {}) };
 
       const zone = computeZone(char.level);
       let enemy =
@@ -569,10 +569,9 @@ async function onActivate(plugin: ReactRNPlugin) {
       const score = event?.score as QueueInteractionScore | undefined;
       const isAgain = score === QueueInteractionScore.AGAIN;
       const isHard = score === QueueInteractionScore.HARD;
-      const isGoodOrEasy =
-        score === QueueInteractionScore.GOOD ||
-        score === QueueInteractionScore.EASY ||
-        score === undefined;
+      const isEasy = score === QueueInteractionScore.EASY;
+      const isGood = score === QueueInteractionScore.GOOD || score === undefined;
+      const isGoodOrEasy = isGood || isEasy;
 
       const today = getTodayISO();
       if (char.lastActiveDate !== today) {
@@ -602,11 +601,13 @@ async function onActivate(plugin: ReactRNPlugin) {
       if (char.activeScrollCards > 0) {
         scrollMult = 2;
         char.activeScrollCards -= 1;
+        applyQuestProgress(questLog.dailies, 'use_xp_scroll_total', 1);
+        applyQuestProgress(questLog.weeklies, 'use_xp_scroll_total', 1);
       }
 
       const hpBonus = char.hp / char.maxHp > 0.7 ? 0.1 : 0;
-      let xpGain = 0;
 
+      let xpGain = 0;
       if (isAgain) {
         xpGain = 0;
         char.goodStreak = 0;
@@ -620,32 +621,31 @@ async function onActivate(plugin: ReactRNPlugin) {
         const mult = restedMult * scrollMult * (1 + hpBonus);
         xpGain = Math.round(baseXP * mult);
         char.goodStreak += 1;
+        applyQuestProgress(questLog.dailies, 'good_easy_total', 1);
+        applyQuestProgress(questLog.weeklies, 'good_easy_total', 1);
       }
-
-      if (char.level < 60) {
-        char.currentXP += xpGain;
-      }
-      char.totalXP += xpGain;
-      char.cardsAnswered += 1;
-
-      applyQuestProgress(questLog.dailies, 'reviews_total', 1);
-      applyQuestProgress(questLog.weeklies, 'reviews_total', 1);
 
       if (!isAgain) {
         applyQuestProgress(questLog.dailies, 'no_again_total', 1);
         applyQuestProgress(questLog.weeklies, 'no_again_total', 1);
       }
 
-      if (isGoodOrEasy) {
-        applyQuestProgress(questLog.dailies, 'good_easy_total', 1);
-        applyQuestProgress(questLog.weeklies, 'good_easy_total', 1);
+      if (isEasy) {
+        char.hp = Math.min(char.maxHp, char.hp + 2);
       }
 
-      let playerDmg = 1;
+      if (char.level < 60) char.currentXP += xpGain;
+      char.totalXP += xpGain;
+      char.cardsAnswered += 1;
+      applyQuestProgress(questLog.dailies, 'reviews_total', 1);
+      applyQuestProgress(questLog.weeklies, 'reviews_total', 1);
 
+      let playerDmg = 1;
       if (char.activeDamageCards > 0) {
         playerDmg *= 2;
         char.activeDamageCards -= 1;
+        applyQuestProgress(questLog.dailies, 'use_dmg_scroll_total', 1);
+        applyQuestProgress(questLog.weeklies, 'use_dmg_scroll_total', 1);
       }
 
       if (char.goodStreak >= 5 && isGoodOrEasy) {
@@ -658,22 +658,38 @@ async function onActivate(plugin: ReactRNPlugin) {
 
       enemy.currentHP -= playerDmg;
 
+      let dmg = 0;
       if (isAgain) {
-        const dmg = enemy.damage * 2;
+        dmg = enemy.damage * 2;
         char.hp = Math.max(0, char.hp - dmg);
-        applyQuestProgress(questLog.dailies, 'take_damage_total', dmg);
-        applyQuestProgress(questLog.weeklies, 'take_damage_total', dmg);
       } else if (isHard) {
-        const dmg = enemy.damage;
+        dmg = enemy.damage;
         char.hp = Math.max(0, char.hp - dmg);
+      }
+
+      if (dmg > 0) {
         applyQuestProgress(questLog.dailies, 'take_damage_total', dmg);
         applyQuestProgress(questLog.weeklies, 'take_damage_total', dmg);
       }
 
       if (char.hp === 0) {
-        char.streakDays = 0;
-        char.hp = 20;
-        await plugin.app.toast('💀 You have fallen! Streak broken. HP: 20');
+        const deathPenalty = Math.max(1, Math.round(xpForLevel(char.level) * 0.3));
+        char.currentXP -= deathPenalty;
+
+        if (char.currentXP < 0 && char.level > 1) {
+          const overflow = char.currentXP;
+          char.level -= 1;
+          char.maxHp = 100 + (char.level - 1) * 5;
+          char.currentXP = Math.max(0, xpForLevel(char.level) + overflow);
+          await plugin.app.toast(`💀 You died! -${deathPenalty} XP and lost 1 level.`);
+        } else {
+          char.currentXP = Math.max(0, char.currentXP);
+          await plugin.app.toast(`💀 You died! -${deathPenalty} XP.`);
+        }
+
+        char.maxHp = 100 + (char.level - 1) * 5;
+        char.hp = Math.max(30, Math.floor(char.maxHp * 0.5));
+        enemy = generateEnemy(char.level, false, computeZone(char.level));
       }
 
       if (enemy.currentHP <= 0) {
@@ -681,16 +697,19 @@ async function onActivate(plugin: ReactRNPlugin) {
         applyQuestProgress(questLog.dailies, 'kill_total', 1);
         applyQuestProgress(questLog.weeklies, 'kill_total', 1);
 
+        let goldGain = 0;
+        let silverGain = 0;
+
         if (enemy.elite) {
           char.elitesDefeated += 1;
-          const goldGain = 1 + Math.floor(Math.random() * 3);
+          goldGain = 1 + Math.floor(Math.random() * 3);
           char.gold += goldGain;
           applyQuestProgress(questLog.dailies, 'elite_total', 1);
           applyQuestProgress(questLog.weeklies, 'elite_total', 1);
           applyQuestProgress(questLog.dailies, 'gold_total', goldGain);
           applyQuestProgress(questLog.weeklies, 'gold_total', goldGain);
         } else {
-          const silverGain = 1 + Math.floor(Math.random() * 2);
+          silverGain = 1 + Math.floor(Math.random() * 2);
           char.silver += silverGain;
           applyQuestProgress(questLog.dailies, 'silver_total', silverGain);
           applyQuestProgress(questLog.weeklies, 'silver_total', silverGain);
@@ -700,8 +719,7 @@ async function onActivate(plugin: ReactRNPlugin) {
           enemy.elite ? `🏆 ${enemy.name} defeated!` : `💥 ${enemy.name} defeated!`
         );
 
-        const spawnElite =
-          char.monstersDefeated > 0 && char.monstersDefeated % ELITE_EVERY === 0;
+        const spawnElite = char.monstersDefeated > 0 && char.monstersDefeated % ELITE_EVERY === 0;
         enemy = generateEnemy(char.level, spawnElite, computeZone(char.level));
       }
 
@@ -723,11 +741,6 @@ async function onActivate(plugin: ReactRNPlugin) {
       await plugin.storage.setSynced('character', char);
       await plugin.storage.setSynced('activeEnemy', enemy);
       await plugin.storage.setSynced('questLog', questLog);
-
-      await plugin.window.openFloatingWidget('battle_overlay', {
-        top: 80,
-        left: 20,
-      });
     }
   );
 }
