@@ -2,7 +2,7 @@
   "author": "Nick",
   "name": "RemCraft",
   "repoUrl": "https://github.com/ngehr/RemCraft",
-  "description": "Gamification",
+  "description": "Kill mobs, travel through Azeroth and level up your character while studying flashcards.",
   "enableOnMobile": false,
   "id": "RemCraft",
   "manifestVersion": 1,
