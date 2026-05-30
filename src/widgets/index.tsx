@@ -5,6 +5,13 @@ import {
   AppEvents,
   QueueInteractionScore,
 } from '@remnote/plugin-sdk';
+import {
+  ThemeMode,
+  THEMES,
+  DEFAULT_THEME_MODE,
+  THEME_STORAGE_KEY,
+  THEME_SETTING_ID,
+} from './theme';
 
 interface CharacterState {
   level: number;
@@ -539,6 +546,52 @@ async function onActivate(plugin: ReactRNPlugin) {
 
   const questsRaw = (await plugin.storage.getSynced('questLog')) as Partial<QuestLogState> | undefined;
   await plugin.storage.setSynced('questLog', ensureQuestLog(questsRaw));
+
+  // --- Theme: register a dropdown setting and seed the synced storage ---
+  try {
+    await plugin.settings.registerDropdownSetting({
+      id: THEME_SETTING_ID,
+      title: 'Theme',
+      description:
+        'Choose between Dark, Light or E-Ink (high-contrast B/W for E-Ink readers like Boox / Viwoods). You can also switch from the panel header.',
+      defaultValue: DEFAULT_THEME_MODE,
+      options: [
+        { key: 'dark',  value: 'dark',  label: '\uD83C\uDF19 Dark' },
+        { key: 'light', value: 'light', label: '\u2600\uFE0F Light' },
+        { key: 'eink',  value: 'eink',  label: '\uD83D\uDCD6 E-Ink' },
+      ],
+    });
+  } catch {
+    /* registerDropdownSetting may already exist on hot-reload */
+  }
+
+  // Sync setting -> shared storage so widgets re-render.
+  const storedTheme = (await plugin.storage.getSynced(THEME_STORAGE_KEY)) as ThemeMode | undefined;
+  if (!storedTheme || !(storedTheme in THEMES)) {
+    let initial: ThemeMode = DEFAULT_THEME_MODE;
+    try {
+      const fromSetting = (await plugin.settings.getSetting(THEME_SETTING_ID)) as ThemeMode | undefined;
+      if (fromSetting && fromSetting in THEMES) initial = fromSetting;
+    } catch {
+      /* settings may not be ready yet */
+    }
+    await plugin.storage.setSynced(THEME_STORAGE_KEY, initial);
+  }
+
+  // Mirror setting changes into synced storage in real time.
+  try {
+    plugin.track(async (rp) => {
+      const value = (await rp.settings.getSetting(THEME_SETTING_ID)) as ThemeMode | undefined;
+      if (value && value in THEMES) {
+        const current = (await plugin.storage.getSynced(THEME_STORAGE_KEY)) as ThemeMode | undefined;
+        if (current !== value) {
+          await plugin.storage.setSynced(THEME_STORAGE_KEY, value);
+        }
+      }
+    });
+  } catch {
+    /* plugin.track may not be available on older SDKs */
+  }
 
 await plugin.app.registerWidget('character_panel', WidgetLocation.RightSidebar, {
   dimensions: { height: 'auto', width: '100%' },
