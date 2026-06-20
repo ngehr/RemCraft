@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
 import { renderWidget, usePlugin, useSyncedStorageState } from '@remnote/plugin-sdk';
+import {
+  Theme,
+  ThemeMode,
+  THEMES,
+  DEFAULT_THEME_MODE,
+  THEME_STORAGE_KEY,
+  getTheme,
+  getHpFill,
+} from './theme';
 
 interface ShopItem {
   id: string;
@@ -132,18 +141,69 @@ function rewardLine(quest: QuestState): string {
   return bits.join(' · ');
 }
 
-function tabButton(active: boolean): React.CSSProperties {
+function tabButton(theme: Theme, active: boolean): React.CSSProperties {
   return {
     flex: 1,
     padding: '5px 4px',
     borderRadius: '5px',
-    border: active ? '1px solid #8b5a2b' : '1px solid #3a2b18',
-    background: active ? '#2a1d10' : '#120d08',
-    color: active ? '#ffd27f' : '#8f7c5f',
+    border: active ? `1px solid ${theme.tabActiveBorder}` : `1px solid ${theme.tabIdleBorder}`,
+    background: active ? theme.tabActiveBg : theme.tabIdleBg,
+    color: active ? theme.tabActiveText : theme.tabIdleText,
     fontSize: '9px',
     fontWeight: 700,
     cursor: 'pointer',
   };
+}
+
+const THEME_OPTIONS: { mode: ThemeMode; label: string; emoji: string; hint: string }[] = [
+  { mode: 'dark',  label: 'Dark',  emoji: '🌙', hint: 'Original night theme' },
+  { mode: 'light', label: 'Light', emoji: '☀️', hint: 'Parchment / daylight theme' },
+  { mode: 'eink',  label: 'E-Ink', emoji: '📖', hint: 'High-contrast B/W for E-Ink readers' },
+];
+
+function ThemeSwitcher({
+  theme,
+  mode,
+  onChange,
+}: {
+  theme: Theme;
+  mode: ThemeMode;
+  onChange: (m: ThemeMode) => void;
+}) {
+  return (
+    <div
+      role="radiogroup"
+      aria-label="Theme"
+      style={{ display: 'flex', gap: '3px', marginLeft: 'auto' }}
+    >
+      {THEME_OPTIONS.map((opt) => {
+        const active = opt.mode === mode;
+        return (
+          <button
+            key={opt.mode}
+            role="radio"
+            aria-checked={active}
+            title={opt.hint}
+            onClick={() => onChange(opt.mode)}
+            style={{
+              padding: '3px 6px',
+              borderRadius: '4px',
+              border: active
+                ? `1px solid ${theme.tabActiveBorder}`
+                : `1px solid ${theme.tabIdleBorder}`,
+              background: active ? theme.tabActiveBg : theme.tabIdleBg,
+              color: active ? theme.tabActiveText : theme.tabIdleText,
+              fontSize: '11px',
+              cursor: 'pointer',
+              lineHeight: 1,
+            }}
+          >
+            <span aria-hidden="true">{opt.emoji}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
 }
 
 function CharacterPanel() {
@@ -153,9 +213,14 @@ function CharacterPanel() {
   const [rawChar, setRawChar] = useSyncedStorageState<CharacterState>('character', defaultCharacter);
   const [enemyRaw] = useSyncedStorageState<EnemyState | null>('activeEnemy', null);
   const [questLogRaw] = useSyncedStorageState<QuestLogState | null>('questLog', null);
+  const [themeMode, setThemeMode] = useSyncedStorageState<ThemeMode>(
+    THEME_STORAGE_KEY,
+    DEFAULT_THEME_MODE
+  );
   const [confirmReset, setConfirmReset] = useState(false);
   const [activeTab, setActiveTab] = useState<PanelTab>('overview');
 
+  const theme: Theme = getTheme(themeMode);
   const enemy: EnemyState = enemyRaw ? { ...defaultEnemy, ...enemyRaw } : { ...defaultEnemy };
   const character: CharacterState = { ...defaultCharacter, ...(rawChar ?? {}) };
   const questLog: QuestLogState = questLogRaw ?? { dailyDate: '', weeklyKey: '', dailies: [], weeklies: [], lastDailyTitles: [], lastWeeklyTitles: [] };
@@ -196,81 +261,82 @@ function CharacterPanel() {
   }
 
   return (
-    <div style={{ fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif', color: '#f5f5f5', background: 'radial-gradient(circle at top, #2b2b3a 0, #050509 60%)', borderTop: '2px solid #8b5a2b', minHeight: '100%' }}>
+    <div style={{ fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif', color: theme.text, background: theme.panelBg, borderTop: theme.borderTopAccent, minHeight: '100%' }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 12px 6px', borderBottom: '1px solid #705030' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 12px 6px', borderBottom: `1px solid ${theme.border}` }}>
         <img src={`${rootURL}ui/sidebar_icon.png`} alt="" style={{ width: '28px', height: '28px', imageRendering: 'pixelated', borderRadius: '4px' }} onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-        <div>
-          <div style={{ fontSize: '14px', fontWeight: 700, color: '#c79c6e', textShadow: '0 0 4px #000' }}>⚔️ World of Remcraft</div>
-          <div style={{ fontSize: '10px', color: '#a0a0c0' }}>{enemy.zoneName}</div>
+        <div style={{ minWidth: 0 }}>
+          <div style={{ fontSize: '14px', fontWeight: 700, color: theme.textAccent, textShadow: theme.textShadow }}>⚔️ World of Remcraft</div>
+          <div style={{ fontSize: '10px', color: theme.textMuted }}>{enemy.zoneName}</div>
         </div>
+        <ThemeSwitcher theme={theme} mode={themeMode ?? DEFAULT_THEME_MODE} onChange={setThemeMode} />
       </div>
 
       <div style={{ padding: '10px 12px' }}>
         {/* Character bar */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-          <img src={getCharacterSprite(rootURL, level)} alt="Character" style={{ width: '64px', height: '64px', imageRendering: 'pixelated', borderRadius: '6px', border: '1px solid #705030' }} onError={(e) => { (e.target as HTMLImageElement).outerHTML = '<span style="font-size:32px">🧙</span>'; }} />
+          <img src={getCharacterSprite(rootURL, level)} alt="Character" style={{ width: '64px', height: '64px', imageRendering: 'pixelated', borderRadius: '6px', border: theme.imageBorder }} onError={(e) => { (e.target as HTMLImageElement).outerHTML = '<span style="font-size:32px">🧙</span>'; }} />
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: '13px', fontWeight: 700, color: '#c79c6e' }}>Level {level}{level >= 60 ? ' (MAX)' : ''}</div>
-            {character.streakDays > 1 && <div style={{ fontSize: '10px', color: '#fb923c' }}>🔥 Streak: {character.streakDays} days</div>}
-            <div style={{ fontSize: '10px', color: '#b0b0c0' }}>{character.cardsAnswered} cards · {character.totalXP} XP</div>
-            <div style={{ marginTop: '3px', background: '#1a1a24', borderRadius: '3px', height: '7px', border: '1px solid #705030', boxShadow: 'inset 0 0 3px #000' }}>
-              <div style={{ width: `${xpPct}%`, background: 'linear-gradient(90deg, #503b9a, #8c63ff)', borderRadius: '2px', height: '100%', transition: 'width 0.25s' }} />
+            <div style={{ fontSize: '13px', fontWeight: 700, color: theme.textAccent }}>Level {level}{level >= 60 ? ' (MAX)' : ''}</div>
+            {character.streakDays > 1 && <div style={{ fontSize: '10px', color: theme.textStreak, fontWeight: theme.mode === 'eink' ? 700 : 400 }}>🔥 Streak: {character.streakDays} days</div>}
+            <div style={{ fontSize: '10px', color: theme.textMuted }}>{character.cardsAnswered} cards · {character.totalXP} XP</div>
+            <div style={{ marginTop: '3px', background: theme.xpTrack, borderRadius: '3px', height: '7px', border: `1px solid ${theme.border}`, boxShadow: theme.insetShadow }}>
+              <div style={{ width: `${xpPct}%`, background: theme.xpFill, borderRadius: '2px', height: '100%', transition: 'width 0.25s' }} />
             </div>
-            <div style={{ fontSize: '9px', color: '#888', marginTop: '1px' }}>{level < 60 ? `${character.currentXP} / ${xpNeeded} XP` : 'Max level reached!'}</div>
+            <div style={{ fontSize: '9px', color: theme.textSubtle, marginTop: '1px' }}>{level < 60 ? `${character.currentXP} / ${xpNeeded} XP` : 'Max level reached!'}</div>
           </div>
         </div>
 
         {/* Currency */}
-        <div style={{ display: 'flex', gap: '10px', fontSize: '11px', marginBottom: '8px', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: '10px', fontSize: '11px', marginBottom: '8px', flexWrap: 'wrap', color: theme.text }}>
           <span>🥈 {character.silver}</span>
-          <span style={{ color: '#fbbf24' }}>🥇 {character.gold}</span>
-          {character.activeScrollCards > 0 && <span style={{ color: '#60a5fa' }}>📜 XP×{character.activeScrollCards}</span>}
-          {character.activeDamageCards > 0 && <span style={{ color: '#f97373' }}>💢 DMG×{character.activeDamageCards}</span>}
+          <span style={{ color: theme.textGold, fontWeight: theme.mode === 'eink' ? 700 : 400 }}>🥇 {character.gold}</span>
+          {character.activeScrollCards > 0 && <span style={{ color: theme.mode === 'eink' ? theme.text : '#60a5fa' }}>📜 XP×{character.activeScrollCards}</span>}
+          {character.activeDamageCards > 0 && <span style={{ color: theme.mode === 'eink' ? theme.text : '#f97373' }}>💢 DMG×{character.activeDamageCards}</span>}
         </div>
 
         {/* Tabs */}
         <div style={{ display: 'flex', gap: '4px', marginBottom: '8px' }}>
-          <button onClick={() => setActiveTab('overview')} style={tabButton(activeTab === 'overview')}>Overview</button>
-          <button onClick={() => setActiveTab('shop')} style={tabButton(activeTab === 'shop')}>Shop</button>
-          <button onClick={() => setActiveTab('stats')} style={tabButton(activeTab === 'stats')}>Stats</button>
-          <button onClick={() => setActiveTab('help')} style={tabButton(activeTab === 'help')}>Help</button>
+          <button onClick={() => setActiveTab('overview')} style={tabButton(theme, activeTab === 'overview')}>Overview</button>
+          <button onClick={() => setActiveTab('shop')} style={tabButton(theme, activeTab === 'shop')}>Shop</button>
+          <button onClick={() => setActiveTab('stats')} style={tabButton(theme, activeTab === 'stats')}>Stats</button>
+          <button onClick={() => setActiveTab('help')} style={tabButton(theme, activeTab === 'help')}>Help</button>
         </div>
 
         {/* OVERVIEW TAB */}
         {activeTab === 'overview' && (
           <>
             {/* Enemy */}
-            <div style={{ border: '1px solid #705030', borderRadius: '8px', padding: '8px', background: '#1b1b27', marginBottom: '8px', boxShadow: '0 0 8px rgba(0,0,0,0.6)' }}>
+            <div style={{ border: `1px solid ${theme.border}`, borderRadius: '8px', padding: '8px', background: theme.surface, marginBottom: '8px', boxShadow: theme.cardShadow }}>
               <div style={{ textAlign: 'center', marginBottom: '4px' }}>
                 {enemy.imageKey ? (
                   <img src={`${rootURL}mobs/${enemy.imageKey}.png`} alt={enemy.name} style={{ width: '64px', height: '64px', imageRendering: 'pixelated', borderRadius: '4px' }} onError={(e) => { (e.target as HTMLImageElement).outerHTML = `<span style="font-size:40px">${enemy.emoji}</span>`; }} />
                 ) : <span style={{ fontSize: '40px' }}>{enemy.emoji}</span>}
               </div>
-              <div style={{ fontWeight: 700, textAlign: 'center', marginBottom: '4px', fontSize: '12px', color: enemy.elite ? '#ff5555' : '#ffd27f', textShadow: '0 0 4px #000' }}>{enemy.name}</div>
-              <div style={{ background: '#3a0000', borderRadius: '4px', height: '7px', boxShadow: 'inset 0 0 4px #000' }}>
-                <div style={{ width: `${mobHpPct}%`, background: enemy.elite ? 'linear-gradient(90deg, #7f1d1d, #ef4444)' : 'linear-gradient(90deg, #b91c1c, #f97373)', borderRadius: '3px', height: '100%', transition: 'width 0.2s' }} />
+              <div style={{ fontWeight: 700, textAlign: 'center', marginBottom: '4px', fontSize: '12px', color: enemy.elite ? theme.textEnemyElite : theme.textEnemyNormal, textShadow: theme.textShadow, textDecoration: theme.mode === 'eink' && enemy.elite ? 'underline' : 'none' }}>{enemy.elite && theme.mode === 'eink' ? '★ ' : ''}{enemy.name}</div>
+              <div style={{ background: theme.mobHpTrack, borderRadius: '4px', height: '7px', boxShadow: theme.insetShadow, border: theme.mode === 'eink' ? `1px solid ${theme.border}` : 'none' }}>
+                <div style={{ width: `${mobHpPct}%`, background: enemy.elite ? theme.mobHpFillElite : theme.mobHpFillNormal, borderRadius: '3px', height: '100%', transition: 'width 0.2s' }} />
               </div>
-              <div style={{ fontSize: '10px', color: '#c0c0c0', marginTop: '2px', textAlign: 'center' }}>❤️ {Math.max(0, enemy.currentHP)} / {enemy.maxHP} · ⚔️ {enemy.damage} dmg/round</div>
+              <div style={{ fontSize: '10px', color: theme.textMuted, marginTop: '2px', textAlign: 'center' }}>❤️ {Math.max(0, enemy.currentHP)} / {enemy.maxHP} · ⚔️ {enemy.damage} dmg/round</div>
             </div>
 
             {/* Milestones */}
-            <div style={{ marginBottom: '8px', padding: '6px 8px', background: '#0d0d1a', borderRadius: '6px', border: '1px solid #463218' }}>
-              <div style={{ fontSize: '10px', color: '#c79c6e', fontWeight: 600, marginBottom: '3px' }}>Next goals</div>
-              {milestones.map((m, i) => <div key={i} style={{ fontSize: '9px', color: '#aaa', marginBottom: '1px' }}>{m}</div>)}
+            <div style={{ marginBottom: '8px', padding: '6px 8px', background: theme.surface, borderRadius: '6px', border: `1px solid ${theme.borderHelp}` }}>
+              <div style={{ fontSize: '10px', color: theme.textAccent, fontWeight: 600, marginBottom: '3px' }}>Next goals</div>
+              {milestones.map((m, i) => <div key={i} style={{ fontSize: '9px', color: theme.textMuted, marginBottom: '1px' }}>{m}</div>)}
             </div>
 
             {/* Daily quest */}
-            <div style={{ padding: '8px', background: 'linear-gradient(180deg, #20150a 0%, #120c06 100%)', borderRadius: '8px', border: '1px solid #7c5a26', marginBottom: '8px' }}>
-              <div style={{ fontSize: '11px', color: '#ffd27f', fontWeight: 700, marginBottom: '6px' }}>Active Daily Quest</div>
-              {!dailyQuest ? <div style={{ fontSize: '9px', color: '#888' }}>No daily quest loaded yet.</div> : (
+            <div style={{ padding: '8px', background: theme.surfaceQuest, borderRadius: '8px', border: `1px solid ${theme.borderQuest}`, marginBottom: '8px' }}>
+              <div style={{ fontSize: '11px', color: theme.textEnemyNormal, fontWeight: 700, marginBottom: '6px' }}>Active Daily Quest</div>
+              {!dailyQuest ? <div style={{ fontSize: '9px', color: theme.textSubtle }}>No daily quest loaded yet.</div> : (
                 <div>
-                  <div style={{ fontSize: '10px', color: dailyQuest.completed ? '#86efac' : '#f3e2b8', fontWeight: 700 }}>{dailyQuest.completed ? '✅ ' : '❓ '}{dailyQuest.title}</div>
-                  <div style={{ fontSize: '9px', color: '#bba98a', marginTop: '2px', marginBottom: '4px' }}>{dailyQuest.description}</div>
-                  <div style={{ background: '#2b1d10', borderRadius: '4px', height: '8px', overflow: 'hidden' }}>
-                    <div style={{ width: `${questPercent(dailyQuest)}%`, height: '100%', background: dailyQuest.completed ? 'linear-gradient(90deg,#15803d,#4ade80)' : 'linear-gradient(90deg,#d97706,#facc15)' }} />
+                  <div style={{ fontSize: '10px', color: dailyQuest.completed ? theme.textQuestDone : theme.textQuestActive, fontWeight: 700 }}>{dailyQuest.completed ? '✅ ' : '❓ '}{dailyQuest.title}</div>
+                  <div style={{ fontSize: '9px', color: theme.textMuted, marginTop: '2px', marginBottom: '4px' }}>{dailyQuest.description}</div>
+                  <div style={{ background: theme.questBarTrack, borderRadius: '4px', height: '8px', overflow: 'hidden', border: theme.mode === 'eink' ? `1px solid ${theme.border}` : 'none' }}>
+                    <div style={{ width: `${questPercent(dailyQuest)}%`, height: '100%', background: dailyQuest.completed ? theme.questBarFillDone : theme.questBarFillActive }} />
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '3px', fontSize: '9px', color: '#8f7c5f' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '3px', fontSize: '9px', color: theme.textSubtle }}>
                     <span>{dailyQuest.progress}/{dailyQuest.target}</span>
                     <span>{rewardLine(dailyQuest)}</span>
                   </div>
@@ -279,16 +345,16 @@ function CharacterPanel() {
             </div>
 
             {/* Weekly quest */}
-            <div style={{ padding: '8px', background: 'linear-gradient(180deg, #1d1308 0%, #100905 100%)', borderRadius: '8px', border: '1px solid #6b4920', marginBottom: '8px' }}>
-              <div style={{ fontSize: '11px', color: '#fdba74', fontWeight: 700, marginBottom: '6px' }}>Active Weekly Quest</div>
-              {!weeklyQuest ? <div style={{ fontSize: '9px', color: '#888' }}>No weekly quest loaded yet.</div> : (
+            <div style={{ padding: '8px', background: theme.surfaceQuestWeekly, borderRadius: '8px', border: `1px solid ${theme.borderQuestWeekly}`, marginBottom: '8px' }}>
+              <div style={{ fontSize: '11px', color: theme.textQuestWeekly, fontWeight: 700, marginBottom: '6px' }}>Active Weekly Quest</div>
+              {!weeklyQuest ? <div style={{ fontSize: '9px', color: theme.textSubtle }}>No weekly quest loaded yet.</div> : (
                 <div>
-                  <div style={{ fontSize: '10px', color: weeklyQuest.completed ? '#86efac' : '#f3e2b8', fontWeight: 700 }}>{weeklyQuest.completed ? '✅ ' : '❓ '}{weeklyQuest.title}</div>
-                  <div style={{ fontSize: '9px', color: '#bba98a', marginTop: '2px', marginBottom: '4px' }}>{weeklyQuest.description}</div>
-                  <div style={{ background: '#2b1d10', borderRadius: '4px', height: '8px', overflow: 'hidden' }}>
-                    <div style={{ width: `${questPercent(weeklyQuest)}%`, height: '100%', background: weeklyQuest.completed ? 'linear-gradient(90deg,#15803d,#4ade80)' : 'linear-gradient(90deg,#b45309,#fb923c)' }} />
+                  <div style={{ fontSize: '10px', color: weeklyQuest.completed ? theme.textQuestDone : theme.textQuestActive, fontWeight: 700 }}>{weeklyQuest.completed ? '✅ ' : '❓ '}{weeklyQuest.title}</div>
+                  <div style={{ fontSize: '9px', color: theme.textMuted, marginTop: '2px', marginBottom: '4px' }}>{weeklyQuest.description}</div>
+                  <div style={{ background: theme.questBarTrack, borderRadius: '4px', height: '8px', overflow: 'hidden', border: theme.mode === 'eink' ? `1px solid ${theme.border}` : 'none' }}>
+                    <div style={{ width: `${questPercent(weeklyQuest)}%`, height: '100%', background: weeklyQuest.completed ? theme.questBarFillDone : theme.questBarFillWeeklyActive }} />
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '3px', fontSize: '9px', color: '#8f7c5f' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '3px', fontSize: '9px', color: theme.textSubtle }}>
                     <span>{weeklyQuest.progress}/{weeklyQuest.target}</span>
                     <span>{rewardLine(weeklyQuest)}</span>
                   </div>
@@ -300,19 +366,19 @@ function CharacterPanel() {
 
         {/* SHOP TAB */}
         {activeTab === 'shop' && (
-          <div style={{ padding: '8px', background: '#0d1a0d', borderRadius: '8px', border: '1px solid #2d5a1b', marginBottom: '8px' }}>
-            <div style={{ fontSize: '11px', color: '#86efac', fontWeight: 700, marginBottom: '6px' }}>🏪 Shop</div>
-            <div style={{ fontSize: '9px', color: '#9ca3af', marginBottom: '8px' }}>Buy scrolls to boost your run.</div>
+          <div style={{ padding: '8px', background: theme.surfaceShop, borderRadius: '8px', border: `1px solid ${theme.borderShop}`, marginBottom: '8px' }}>
+            <div style={{ fontSize: '11px', color: theme.textShop, fontWeight: 700, marginBottom: '6px' }}>🏪 Shop</div>
+            <div style={{ fontSize: '9px', color: theme.textMuted, marginBottom: '8px' }}>Buy scrolls to boost your run.</div>
             {SHOP_ITEMS.map((shop) => {
               const canAfford = shop.costSilver !== undefined ? character.silver >= shop.costSilver : character.gold >= (shop.costGold ?? 0);
               const costLabel = shop.costSilver !== undefined ? `🥈 ${shop.costSilver}` : `🥇 ${shop.costGold}`;
               return (
-                <div key={shop.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px', padding: '6px 0', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                <div key={shop.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px', padding: '6px 0', borderBottom: `1px solid ${theme.divider}` }}>
                   <div style={{ paddingRight: '8px' }}>
-                    <div style={{ fontSize: '10px', color: '#ddd', fontWeight: 600 }}>{shop.name}</div>
-                    <div style={{ fontSize: '9px', color: '#9ca3af' }}>{shop.description}</div>
+                    <div style={{ fontSize: '10px', color: theme.text, fontWeight: 600 }}>{shop.name}</div>
+                    <div style={{ fontSize: '9px', color: theme.textMuted }}>{shop.description}</div>
                   </div>
-                  <button onClick={() => buyItem(shop)} disabled={!canAfford} style={{ fontSize: '9px', padding: '4px 8px', borderRadius: '4px', border: 'none', cursor: canAfford ? 'pointer' : 'not-allowed', background: canAfford ? '#15803d' : '#333', color: canAfford ? '#fff' : '#666', minWidth: '58px' }}>
+                  <button onClick={() => buyItem(shop)} disabled={!canAfford} style={{ fontSize: '9px', padding: '4px 8px', borderRadius: '4px', border: theme.mode === 'eink' ? `1px solid ${theme.border}` : 'none', cursor: canAfford ? 'pointer' : 'not-allowed', background: canAfford ? theme.buyBg : theme.buyDisabledBg, color: canAfford ? theme.buyText : theme.buyDisabledText, minWidth: '58px', fontWeight: theme.mode === 'eink' ? 700 : 400 }}>
                     {costLabel}
                   </button>
                 </div>
@@ -323,19 +389,19 @@ function CharacterPanel() {
 
         {/* STATS TAB */}
         {activeTab === 'stats' && (
-          <div style={{ padding: '8px', background: '#111', borderRadius: '8px', border: '1px solid #333', marginBottom: '8px' }}>
-            <div style={{ fontSize: '11px', color: '#cbd5e1', fontWeight: 700, marginBottom: '6px' }}>📊 Statistics</div>
+          <div style={{ padding: '8px', background: theme.surfaceStats, borderRadius: '8px', border: `1px solid ${theme.borderStats}`, marginBottom: '8px' }}>
+            <div style={{ fontSize: '11px', color: theme.textStats, fontWeight: 700, marginBottom: '6px' }}>📊 Statistics</div>
             <div style={{ display: 'grid', gap: '6px' }}>
               {[
-                { label: '🧟 Enemies defeated', value: character.monstersDefeated, color: '#f3f4f6' },
-                { label: '🏆 Elites defeated', value: character.elitesDefeated, color: '#fbbf24' },
-                { label: '📚 Cards answered', value: character.cardsAnswered, color: '#93c5fd' },
-                { label: '✨ Total XP', value: character.totalXP.toLocaleString(), color: '#c4b5fd' },
-                { label: '🔥 Current streak', value: `${character.streakDays} days`, color: '#fb923c' },
+                { label: '🧿 Enemies defeated', value: character.monstersDefeated },
+                { label: '🏆 Elites defeated', value: character.elitesDefeated },
+                { label: '📚 Cards answered', value: character.cardsAnswered },
+                { label: '✨ Total XP', value: character.totalXP.toLocaleString() },
+                { label: '🔥 Current streak', value: `${character.streakDays} days` },
               ].map((s) => (
-                <div key={s.label} style={{ padding: '6px 8px', background: '#171717', borderRadius: '6px', border: '1px solid #2a2a2a' }}>
-                  <div style={{ fontSize: '9px', color: '#888' }}>{s.label}</div>
-                  <div style={{ fontSize: '12px', fontWeight: 700, color: s.color }}>{s.value}</div>
+                <div key={s.label} style={{ padding: '6px 8px', background: theme.surface, borderRadius: '6px', border: `1px solid ${theme.borderStats}` }}>
+                  <div style={{ fontSize: '9px', color: theme.textSubtle }}>{s.label}</div>
+                  <div style={{ fontSize: '12px', fontWeight: 700, color: theme.text }}>{s.value}</div>
                 </div>
               ))}
             </div>
@@ -344,27 +410,27 @@ function CharacterPanel() {
 
         {/* HELP TAB */}
         {activeTab === 'help' && (
-          <div style={{ padding: '8px', background: '#0c0c1a', borderRadius: '8px', border: '1px solid #3a2b18', marginBottom: '8px' }}>
-            <div style={{ fontSize: '11px', color: '#c79c6e', fontWeight: 700, marginBottom: '6px' }}>📖 Quick Guide</div>
-            <div style={{ display: 'grid', gap: '4px', fontSize: '9px', color: '#b0a090', lineHeight: '1.45' }}>
-              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>⚔️ Fight:</span> each reviewed card deals 1 damage to the enemy.</div>
-              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>✅ Good/Easy:</span> full XP, no penalty.</div>
-              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>🟡 Hard:</span> 40% XP.</div>
-              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>❌ Again:</span> no XP.</div>
-              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>💥 Crit:</span> 5 Good/Easy in a row = next hit deals 2× damage.</div>
-              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>⭐ Elites:</span> every 7th kill, stronger enemy, rewards gold.</div>
-              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>💤 Rested:</span> first 50 daily cards give 2× XP.</div>
-              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>🔥 Streak:</span> study daily to keep your streak alive.</div>
-              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>🏪 Shop:</span> spend gold on scrolls to boost your run.</div>
-              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>📜 Scrolls:</span> XP Scroll = 20 cards, Damage Scroll = 10 cards.</div>
-              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>🗺️ Quests:</span> 1 daily + 1 weekly active at all times.</div>
-              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>🌍 Zones:</span> level up to move through Azeroth zones.</div>
+          <div style={{ padding: '8px', background: theme.surfaceHelp, borderRadius: '8px', border: `1px solid ${theme.borderHelp}`, marginBottom: '8px' }}>
+            <div style={{ fontSize: '11px', color: theme.textHelp, fontWeight: 700, marginBottom: '6px' }}>📖 Quick Guide</div>
+            <div style={{ display: 'grid', gap: '4px', fontSize: '9px', color: theme.textHelpBody, lineHeight: '1.45' }}>
+              <div><span style={{ color: theme.textAccent, fontWeight: 700 }}>⚔️ Fight:</span> each reviewed card deals 1 damage to the enemy.</div>
+              <div><span style={{ color: theme.textAccent, fontWeight: 700 }}>✅ Good/Easy:</span> full XP, no penalty.</div>
+              <div><span style={{ color: theme.textAccent, fontWeight: 700 }}>🟡 Hard:</span> 40% XP.</div>
+              <div><span style={{ color: theme.textAccent, fontWeight: 700 }}>❌ Again:</span> no XP.</div>
+              <div><span style={{ color: theme.textAccent, fontWeight: 700 }}>💥 Crit:</span> 5 Good/Easy in a row = next hit deals 2× damage.</div>
+              <div><span style={{ color: theme.textAccent, fontWeight: 700 }}>⭐ Elites:</span> every 7th kill, stronger enemy, rewards gold.</div>
+              <div><span style={{ color: theme.textAccent, fontWeight: 700 }}>💤 Rested:</span> first 50 daily cards give 2× XP.</div>
+              <div><span style={{ color: theme.textAccent, fontWeight: 700 }}>🔥 Streak:</span> study daily to keep your streak alive.</div>
+              <div><span style={{ color: theme.textAccent, fontWeight: 700 }}>🏪 Shop:</span> spend gold on scrolls to boost your run.</div>
+              <div><span style={{ color: theme.textAccent, fontWeight: 700 }}>📜 Scrolls:</span> XP Scroll = 20 cards, Damage Scroll = 10 cards.</div>
+              <div><span style={{ color: theme.textAccent, fontWeight: 700 }}>🗺️ Quests:</span> 1 daily + 1 weekly active at all times.</div>
+              <div><span style={{ color: theme.textAccent, fontWeight: 700 }}>🌍 Zones:</span> level up to move through Azeroth zones.</div>
             </div>
           </div>
         )}
 
         {/* Reset */}
-        <button onClick={handleReset} style={{ width: '100%', padding: '6px', borderRadius: '5px', border: 'none', cursor: 'pointer', fontSize: '10px', fontWeight: 600, background: confirmReset ? '#7f1d1d' : '#1a0000', color: confirmReset ? '#fca5a5' : '#666', transition: 'all 0.2s' }}>
+        <button onClick={handleReset} style={{ width: '100%', padding: '6px', borderRadius: '5px', border: theme.mode === 'eink' ? `1px solid ${theme.border}` : 'none', cursor: 'pointer', fontSize: '10px', fontWeight: 600, background: confirmReset ? theme.resetConfirmBg : theme.resetIdleBg, color: confirmReset ? theme.resetConfirmText : theme.resetIdleText, transition: 'all 0.2s' }}>
           {confirmReset ? '⚠️ Really reset? (click again)' : '🔄 Reset character'}
         </button>
       </div>

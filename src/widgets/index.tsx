@@ -5,6 +5,13 @@ import {
   AppEvents,
   QueueInteractionScore,
 } from '@remnote/plugin-sdk';
+import {
+  ThemeMode,
+  THEMES,
+  DEFAULT_THEME_MODE,
+  THEME_STORAGE_KEY,
+  THEME_SETTING_ID,
+} from './theme';
 
 interface CharacterState {
   level: number;

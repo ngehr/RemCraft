@@ -1,5 +1,13 @@
 import React from 'react';
 import { renderWidget, usePlugin, useSyncedStorageState } from '@remnote/plugin-sdk';
+import {
+  Theme,
+  ThemeMode,
+  DEFAULT_THEME_MODE,
+  THEME_STORAGE_KEY,
+  getTheme,
+  getHpFill,
+} from './theme';
 
 interface CharacterState {
   level: number;
@@ -78,6 +86,8 @@ function BattleOverlay() {
   const rootURL = plugin.rootURL ?? '';
   const [rawEnemy] = useSyncedStorageState<EnemyState>('activeEnemy', defaultEnemy);
   const [rawChar] = useSyncedStorageState<CharacterState>('character', defaultCharacter);
+  const [themeMode] = useSyncedStorageState<ThemeMode>(THEME_STORAGE_KEY, DEFAULT_THEME_MODE);
+  const theme: Theme = getTheme(themeMode);
 
   const enemy: EnemyState = { ...defaultEnemy, ...(rawEnemy ?? {}) };
   const character: CharacterState = { ...defaultCharacter, ...(rawChar ?? {}) };
@@ -102,18 +112,18 @@ function BattleOverlay() {
         justifyContent: 'center',
         padding: '10px 12px',
         boxSizing: 'border-box',
-        background: '#2e2e34',
+        background: theme.overlayBg,
       }}
     >
       <div
         style={{
-          background: 'rgba(12,12,18,0.96)',
+          background: theme.overlayInner,
           borderRadius: '12px',
-          border: '1px solid #705030',
-          boxShadow: '0 0 18px rgba(0,0,0,0.72)',
+          border: `1px solid ${theme.border}`,
+          boxShadow: theme.overlayShadow,
           padding: '10px 14px',
           fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-          color: '#f3f3f3',
+          color: theme.text,
           width: '100%',
           maxWidth: '620px',
           boxSizing: 'border-box',
@@ -146,7 +156,7 @@ function BattleOverlay() {
                 height: '64px',
                 imageRendering: 'pixelated',
                 borderRadius: '6px',
-                border: '1px solid #705030',
+                border: theme.imageBorder,
                 flexShrink: 0,
               }}
               onError={(e) => {
@@ -158,14 +168,14 @@ function BattleOverlay() {
               <div
                 style={{
                   fontSize: '12px',
-                  color: '#c79c6e',
+                  color: theme.textAccent,
                   fontWeight: 700,
                   lineHeight: 1.2,
                 }}
               >
                 Lvl {level}
                 {restedLeft > 0 && (
-                  <span style={{ color: '#93c5fd', marginLeft: '8px', fontSize: '10px' }}>
+                  <span style={{ color: theme.mode === 'eink' ? theme.text : '#93c5fd', marginLeft: '8px', fontSize: '10px' }}>
                     💤 {restedLeft}
                   </span>
                 )}
@@ -177,12 +187,13 @@ function BattleOverlay() {
                   borderRadius: '4px',
                   height: '6px',
                   marginTop: '5px',
+                  border: theme.mode === 'eink' ? `1px solid ${theme.border}` : 'none',
                 }}
               >
                 <div
                   style={{
                     width: `${xpPct}%`,
-                    background: 'linear-gradient(90deg,#503b9a,#8c63ff)',
+                    background: theme.xpFill,
                     borderRadius: '4px',
                     height: '100%',
                     transition: 'width 0.3s',
@@ -190,7 +201,7 @@ function BattleOverlay() {
                 />
               </div>
 
-              <div style={{ fontSize: '10px', color: '#8a8a93', marginTop: '4px' }}>
+              <div style={{ fontSize: '10px', color: theme.textMuted, marginTop: '4px' }}>
                 🥈 {character.silver} · 🥇 {character.gold}
               </div>
             </div>
@@ -200,7 +211,7 @@ function BattleOverlay() {
             style={{
               width: '1px',
               alignSelf: 'stretch',
-              background: '#705030',
+              background: theme.border,
               flexShrink: 0,
             }}
           />
@@ -224,7 +235,7 @@ function BattleOverlay() {
                   height: '64px',
                   imageRendering: 'pixelated',
                   borderRadius: '6px',
-                  border: '1px solid #705030',
+                  border: theme.imageBorder,
                   flexShrink: 0,
                 }}
                 onError={(e) => {
@@ -241,32 +252,32 @@ function BattleOverlay() {
                 style={{
                   fontWeight: 700,
                   fontSize: '12px',
-                  color: enemy.elite ? '#ff5555' : '#ffd27f',
-                  textShadow: '0 0 4px #000',
+                  color: enemy.elite ? theme.textEnemyElite : theme.textEnemyNormal,
+                  textShadow: theme.textShadow,
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   whiteSpace: 'nowrap',
                   lineHeight: 1.2,
+                  textDecoration: theme.mode === 'eink' && enemy.elite ? 'underline' : 'none',
                 }}
               >
-                {enemy.name}
+                {enemy.elite && theme.mode === 'eink' ? '★ ' : ''}{enemy.name}
               </div>
 
               <div
                 style={{
-                  background: '#3a0000',
+                  background: theme.mobHpTrack,
                   borderRadius: '4px',
                   height: '6px',
                   marginTop: '4px',
-                  boxShadow: 'inset 0 0 4px #000',
+                  boxShadow: theme.insetShadow,
+                  border: theme.mode === 'eink' ? `1px solid ${theme.border}` : 'none',
                 }}
               >
                 <div
                   style={{
                     width: `${hpPct}%`,
-                    background: enemy.elite
-                      ? 'linear-gradient(90deg,#7f1d1d,#ef4444)'
-                      : 'linear-gradient(90deg,#b91c1c,#f97373)',
+                    background: enemy.elite ? theme.mobHpFillElite : theme.mobHpFillNormal,
                     borderRadius: '4px',
                     height: '100%',
                     transition: 'width 0.2s',
@@ -274,11 +285,11 @@ function BattleOverlay() {
                 />
               </div>
 
-              <div style={{ fontSize: '10px', color: '#d0d0d5', marginTop: '4px' }}>
+              <div style={{ fontSize: '10px', color: theme.textMuted, marginTop: '4px' }}>
                 ❤️ {Math.max(0, enemy.currentHP)}/{enemy.maxHP} · ⚔️ {enemy.damage} dmg
               </div>
 
-              <div style={{ fontSize: '10px', color: '#8a8a93', marginTop: '4px' }}>
+              <div style={{ fontSize: '10px', color: theme.textSubtle, marginTop: '4px' }}>
                 ⚰️ {character.monstersDefeated} kills · {enemy.zoneName}
               </div>
             </div>
