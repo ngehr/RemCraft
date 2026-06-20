@@ -16,7 +16,7 @@ interface ShopItem {
   description: string;
   costSilver?: number;
   costGold?: number;
-  type: 'heal_small' | 'heal_large' | 'xp_scroll' | 'dmg_scroll';
+  type: 'xp_scroll' | 'dmg_scroll';
   value: number;
 }
 
@@ -27,8 +27,6 @@ interface CharacterState {
   cardsAnswered: number;
   monstersDefeated: number;
   elitesDefeated: number;
-  hp: number;
-  maxHp: number;
   silver: number;
   gold: number;
   streakDays: number;
@@ -82,16 +80,13 @@ const RESTED_XP_CARDS = 50;
 const ELITE_EVERY = 7;
 
 const SHOP_ITEMS: ShopItem[] = [
-  { id: 'bandage', name: 'Bandage', description: '+10 HP', costSilver: 3, type: 'heal_small', value: 10 },
-  { id: 'heal_small', name: 'Small Healing Potion', description: '+25 HP', costSilver: 6, type: 'heal_small', value: 25 },
-  { id: 'heal_large', name: 'Large Healing Potion', description: '+60 HP', costGold: 2, type: 'heal_large', value: 60 },
   { id: 'xp_scroll', name: 'Scroll of Knowledge', description: '2× XP for 20 cards', costGold: 3, type: 'xp_scroll', value: 20 },
   { id: 'dmg_scroll', name: 'Scroll of Fury', description: '2× Damage for 10 cards', costGold: 2, type: 'dmg_scroll', value: 10 },
 ];
 
 const defaultCharacter: CharacterState = {
   level: 1, currentXP: 0, totalXP: 0, cardsAnswered: 0,
-  monstersDefeated: 0, elitesDefeated: 0, hp: 100, maxHp: 100,
+  monstersDefeated: 0, elitesDefeated: 0,
   silver: 0, gold: 0, streakDays: 0, lastActiveDate: '',
   restedXPUsed: 0, activeScrollCards: 0, activeDamageCards: 0, goodStreak: 0,
 };
@@ -236,9 +231,7 @@ function CharacterPanel() {
   const level = Math.max(1, Math.min(60, character.level));
   const xpNeeded = xpForLevel(Math.min(59, level));
   const xpPct = level >= 60 ? 100 : Math.min(100, xpNeeded > 0 ? Math.round((character.currentXP / xpNeeded) * 100) : 0);
-  const hpPct = Math.min(100, character.maxHp > 0 ? Math.round((character.hp / character.maxHp) * 100) : 0);
   const mobHpPct = Math.min(100, enemy.maxHP > 0 ? Math.round((enemy.currentHP / enemy.maxHP) * 100) : 0);
-  const hpColor = getHpFill(theme, hpPct);
   const milestones = getNextMilestones(character);
 
   function handleReset() {
@@ -259,9 +252,7 @@ function CharacterPanel() {
     if (shop.costGold !== undefined && char.gold < shop.costGold) return;
     if (shop.costSilver) char.silver -= shop.costSilver;
     if (shop.costGold) char.gold -= shop.costGold;
-    if (shop.type === 'heal_small' || shop.type === 'heal_large') {
-      char.hp = Math.min(char.maxHp, char.hp + shop.value);
-    } else if (shop.type === 'xp_scroll') {
+    if (shop.type === 'xp_scroll') {
       char.activeScrollCards = (char.activeScrollCards ?? 0) + shop.value;
     } else if (shop.type === 'dmg_scroll') {
       char.activeDamageCards = (char.activeDamageCards ?? 0) + shop.value;
@@ -293,17 +284,6 @@ function CharacterPanel() {
               <div style={{ width: `${xpPct}%`, background: theme.xpFill, borderRadius: '2px', height: '100%', transition: 'width 0.25s' }} />
             </div>
             <div style={{ fontSize: '9px', color: theme.textSubtle, marginTop: '1px' }}>{level < 60 ? `${character.currentXP} / ${xpNeeded} XP` : 'Max level reached!'}</div>
-          </div>
-        </div>
-
-        {/* HP bar */}
-        <div style={{ marginBottom: '8px', padding: '6px 8px', background: theme.surface, borderRadius: '6px', border: `1px solid ${theme.border}` }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: theme.textMuted, marginBottom: '3px' }}>
-            <span>❤️ Health</span>
-            <span style={{ color: hpColor, fontWeight: theme.mode === 'eink' ? 700 : 400 }}>{character.hp} / {character.maxHp}</span>
-          </div>
-          <div style={{ background: theme.hpTrack, borderRadius: '3px', height: '7px', boxShadow: theme.insetShadow, border: theme.mode === 'eink' ? `1px solid ${theme.border}` : 'none' }}>
-            <div style={{ width: `${hpPct}%`, background: theme.mode === 'eink' ? hpColor : `linear-gradient(90deg, #7f1d1d, ${hpColor})`, borderRadius: '3px', height: '100%', transition: 'width 0.2s' }} />
           </div>
         </div>
 
@@ -386,9 +366,9 @@ function CharacterPanel() {
 
         {/* SHOP TAB */}
         {activeTab === 'shop' && (
-          <div style={{ padding: '8px', background: theme.surfaceShop, borderRadius: '8px', border: `1px solid ${theme.borderShop}`, marginBottom: '8px' }}>
-            <div style={{ fontSize: '11px', color: theme.textShop, fontWeight: 700, marginBottom: '6px' }}>🏪 Shop</div>
-            <div style={{ fontSize: '9px', color: theme.textMuted, marginBottom: '8px' }}>Buy healing or scrolls to boost your run.</div>
+          <div style={{ padding: '8px', background: '#0d1a0d', borderRadius: '8px', border: '1px solid #2d5a1b', marginBottom: '8px' }}>
+            <div style={{ fontSize: '11px', color: '#86efac', fontWeight: 700, marginBottom: '6px' }}>🏪 Shop</div>
+            <div style={{ fontSize: '9px', color: '#9ca3af', marginBottom: '8px' }}>Buy scrolls to boost your run.</div>
             {SHOP_ITEMS.map((shop) => {
               const canAfford = shop.costSilver !== undefined ? character.silver >= shop.costSilver : character.gold >= (shop.costGold ?? 0);
               const costLabel = shop.costSilver !== undefined ? `🥈 ${shop.costSilver}` : `🥇 ${shop.costGold}`;
@@ -430,22 +410,21 @@ function CharacterPanel() {
 
         {/* HELP TAB */}
         {activeTab === 'help' && (
-          <div style={{ padding: '8px', background: theme.surfaceHelp, borderRadius: '8px', border: `1px solid ${theme.borderHelp}`, marginBottom: '8px' }}>
-            <div style={{ fontSize: '11px', color: theme.textHelp, fontWeight: 700, marginBottom: '6px' }}>📖 Quick Guide</div>
-            <div style={{ display: 'grid', gap: '4px', fontSize: '9px', color: theme.textHelpBody, lineHeight: '1.45' }}>
-              <div><span style={{ color: theme.textEnemyNormal, fontWeight: 700 }}>⚔️ Fight:</span> each reviewed card deals 1 damage.</div>
-              <div><span style={{ color: theme.textEnemyNormal, fontWeight: 700 }}>✅ Good/Easy:</span> full XP, no damage taken.</div>
-              <div><span style={{ color: theme.textEnemyNormal, fontWeight: 700 }}>🟡 Hard:</span> 40% XP, take normal enemy damage.</div>
-              <div><span style={{ color: theme.textEnemyNormal, fontWeight: 700 }}>❌ Again:</span> no XP, take double damage.</div>
-              <div><span style={{ color: theme.textEnemyNormal, fontWeight: 700 }}>💥 Crit:</span> 5 Good/Easy in a row = next hit deals 2× damage.</div>
-              <div><span style={{ color: theme.textEnemyNormal, fontWeight: 700 }}>⭐ Elites:</span> every 7th kill, stronger enemy, rewards gold.</div>
-              <div><span style={{ color: theme.textEnemyNormal, fontWeight: 700 }}>💤 Rested:</span> first 50 daily cards give 2× XP.</div>
-              <div><span style={{ color: theme.textEnemyNormal, fontWeight: 700 }}>🔥 Streak:</span> study daily; dying resets streak and sets HP to 20.</div>
-              <div><span style={{ color: theme.textEnemyNormal, fontWeight: 700 }}>🏪 Shop:</span> silver = healing, gold = big items and scrolls.</div>
-              <div><span style={{ color: theme.textEnemyNormal, fontWeight: 700 }}>📜 Scrolls:</span> XP Scroll = 20 cards, Damage Scroll = 10 cards.</div>
-              <div><span style={{ color: theme.textEnemyNormal, fontWeight: 700 }}>🗺️ Quests:</span> 1 daily + 1 weekly active at all times.</div>
-              <div><span style={{ color: theme.textEnemyNormal, fontWeight: 700 }}>🌍 Zones:</span> level up to move through Azeroth zones.</div>
-              <div><span style={{ color: theme.textEnemyNormal, fontWeight: 700 }}>🎨 Theme:</span> use the icons in the header to switch dark, light or E-Ink mode.</div>
+          <div style={{ padding: '8px', background: '#0c0c1a', borderRadius: '8px', border: '1px solid #3a2b18', marginBottom: '8px' }}>
+            <div style={{ fontSize: '11px', color: '#c79c6e', fontWeight: 700, marginBottom: '6px' }}>📖 Quick Guide</div>
+            <div style={{ display: 'grid', gap: '4px', fontSize: '9px', color: '#b0a090', lineHeight: '1.45' }}>
+              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>⚔️ Fight:</span> each reviewed card deals 1 damage to the enemy.</div>
+              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>✅ Good/Easy:</span> full XP, no penalty.</div>
+              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>🟡 Hard:</span> 40% XP.</div>
+              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>❌ Again:</span> no XP.</div>
+              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>💥 Crit:</span> 5 Good/Easy in a row = next hit deals 2× damage.</div>
+              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>⭐ Elites:</span> every 7th kill, stronger enemy, rewards gold.</div>
+              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>💤 Rested:</span> first 50 daily cards give 2× XP.</div>
+              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>🔥 Streak:</span> study daily to keep your streak alive.</div>
+              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>🏪 Shop:</span> spend gold on scrolls to boost your run.</div>
+              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>📜 Scrolls:</span> XP Scroll = 20 cards, Damage Scroll = 10 cards.</div>
+              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>🗺️ Quests:</span> 1 daily + 1 weekly active at all times.</div>
+              <div><span style={{ color: '#ffd27f', fontWeight: 700 }}>🌍 Zones:</span> level up to move through Azeroth zones.</div>
             </div>
           </div>
         )}

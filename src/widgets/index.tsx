@@ -20,8 +20,6 @@ interface CharacterState {
   cardsAnswered: number;
   monstersDefeated: number;
   elitesDefeated: number;
-  hp: number;
-  maxHp: number;
   silver: number;
   gold: number;
   streakDays: number;
@@ -75,7 +73,6 @@ type QuestType =
   | 'spend_gold_total'
   | 'use_xp_scroll_total'
   | 'use_dmg_scroll_total'
-  | 'heal_total'
   | 'critical_hits_total';
 
 interface QuestState {
@@ -221,8 +218,8 @@ const ZONES: ZoneConfig[] = [
     minLevel: 35,
     maxLevel: 45,
     normalMobs: [
-      { name: 'Bloodsail Swashbuckler', emoji: '🏴‍☠️', imageKey: 'stv_south_normal_1' },
-      { name: 'Bloodsail Raider', emoji: '🏴‍☠️', imageKey: 'stv_south_normal_2' },
+      { name: 'Bloodsail Swashbuckler', emoji: '🏴\u200d☠️', imageKey: 'stv_south_normal_1' },
+      { name: 'Bloodsail Raider', emoji: '🏴\u200d☠️', imageKey: 'stv_south_normal_2' },
       { name: 'Venture Co. Mercenary', emoji: '💼', imageKey: 'stv_south_normal_3' },
       { name: 'Jungle Stalker', emoji: '🦖', imageKey: 'stv_south_normal_4' },
       { name: 'Elder Saltwater Crocolisk', emoji: '🐊', imageKey: 'stv_south_normal_5' },
@@ -230,7 +227,7 @@ const ZONES: ZoneConfig[] = [
     ],
     eliteMobs: [
       { name: 'King Mukla', emoji: '🦍', imageKey: 'stv_south_elite_mukla' },
-      { name: 'Najak Hexxen', emoji: '🧙‍♂️', imageKey: 'stv_south_elite_najak' },
+      { name: 'Najak Hexxen', emoji: '🧙\u200d♂️', imageKey: 'stv_south_elite_najak' },
       { name: 'Rippa', emoji: '🦖', imageKey: 'stv_south_elite_rippa' },
     ],
   },
@@ -289,7 +286,7 @@ const ZONES: ZoneConfig[] = [
       { name: 'Lord Aurius Rivendare', emoji: '💀', imageKey: 'epl_elite_rivendare' },
       { name: 'Baron Bloodbane', emoji: '🩸', imageKey: 'epl_elite_bloodbane' },
       { name: "Hed'mush the Rotting", emoji: '🧟', imageKey: 'epl_elite_hedmush' },
-      { name: "Zul'Brin Warpbranch", emoji: '🧙‍♂️', imageKey: 'epl_elite_zulbrin' },
+      { name: "Zul'Brin Warpbranch", emoji: '🧙\u200d♂️', imageKey: 'epl_elite_zulbrin' },
     ],
   },
 ];
@@ -303,10 +300,8 @@ const DAILY_QUEST_POOL: QuestTemplate[] = [
   { title: 'Bounty Hunter', description: 'Defeat 6 enemies.', type: 'kill_total', target: 6, rewardSilver: 9, rewardXP: 90 },
   { title: 'Hard Lesson', description: 'Complete 8 Hard answers.', type: 'hard_total', target: 8, rewardSilver: 8, rewardXP: 80 },
   { title: 'Critical Chain', description: 'Land 2 critical hits.', type: 'critical_hits_total', target: 2, rewardSilver: 7, rewardXP: 90 },
-  { title: 'Tough Survivor', description: 'Take 10 damage.', type: 'take_damage_total', target: 10, rewardSilver: 8, rewardXP: 80 },
   { title: 'Silver Purse', description: 'Collect 8 silver.', type: 'silver_total', target: 8, rewardSilver: 4, rewardXP: 60 },
   { title: 'Gold Seeker', description: 'Loot 1 gold.', type: 'gold_total', target: 1, rewardSilver: 5, rewardGold: 1, rewardXP: 80 },
-  { title: 'Recovery', description: 'Restore a total of 30 HP in the shop.', type: 'heal_total', target: 30, rewardSilver: 6, rewardXP: 70 },
   { title: 'Thirst for Knowledge', description: 'Use 1 XP scroll.', type: 'use_xp_scroll_total', target: 1, rewardSilver: 5, rewardXP: 70 },
   { title: 'Battle Hunger', description: 'Use 1 damage scroll.', type: 'use_dmg_scroll_total', target: 1, rewardSilver: 5, rewardXP: 70 },
   { title: 'Camp Expenses', description: 'Spend 8 silver in the shop.', type: 'spend_silver_total', target: 8, rewardSilver: 5, rewardXP: 60 },
@@ -319,11 +314,9 @@ const WEEKLY_QUEST_POOL: QuestTemplate[] = [
   { title: 'No Missteps', description: 'Complete 70 answers without Again.', type: 'no_again_total', target: 70, rewardSilver: 28, rewardGold: 2, rewardXP: 260 },
   { title: 'Elite Hunter', description: 'Defeat 4 elite enemies.', type: 'elite_total', target: 4, rewardSilver: 20, rewardGold: 3, rewardXP: 300 },
   { title: 'Monster Hunter', description: 'Defeat 24 enemies.', type: 'kill_total', target: 24, rewardSilver: 25, rewardGold: 2, rewardXP: 250 },
-  { title: 'Pain Pay', description: 'Take 45 damage.', type: 'take_damage_total', target: 45, rewardSilver: 22, rewardGold: 1, rewardXP: 220 },
   { title: 'Shop Veteran', description: 'Spend 30 silver in the shop.', type: 'spend_silver_total', target: 30, rewardSilver: 30, rewardGold: 2, rewardXP: 290 },
   { title: 'Arcane Stockpile', description: 'Use 2 XP scrolls.', type: 'use_xp_scroll_total', target: 2, rewardSilver: 20, rewardGold: 2, rewardXP: 240 },
   { title: 'Berserker Week', description: 'Use 2 damage scrolls.', type: 'use_dmg_scroll_total', target: 2, rewardSilver: 20, rewardGold: 2, rewardXP: 240 },
-  { title: 'Supply Line', description: 'Restore a total of 100 HP.', type: 'heal_total', target: 100, rewardSilver: 22, rewardGold: 1, rewardXP: 220 },
   { title: 'Gold Reserve', description: 'Loot 5 gold.', type: 'gold_total', target: 5, rewardSilver: 15, rewardGold: 3, rewardXP: 270 },
   { title: 'Hard Training', description: 'Complete 30 Hard answers.', type: 'hard_total', target: 30, rewardSilver: 24, rewardGold: 1, rewardXP: 230 },
   { title: 'Critical Style', description: 'Land 8 critical hits.', type: 'critical_hits_total', target: 8, rewardSilver: 26, rewardGold: 2, rewardXP: 260 },
@@ -510,7 +503,6 @@ async function settleCompletedQuests(
       questLog.lastDailyTitles = pushQuestHistory(questLog.lastDailyTitles, nextQuest.title);
       await plugin.app.toast(`🗺️ New daily quest: ${nextQuest.title}`);
     }
-    // Weekly: stays completed until next weeklyKey reset — no immediate replacement
   }
 
   if (changed) {
@@ -525,8 +517,6 @@ const defaultCharacter: CharacterState = {
   cardsAnswered: 0,
   monstersDefeated: 0,
   elitesDefeated: 0,
-  hp: 100,
-  maxHp: 100,
   silver: 0,
   gold: 0,
   streakDays: 0,
@@ -539,7 +529,7 @@ const defaultCharacter: CharacterState = {
 
 async function onActivate(plugin: ReactRNPlugin) {
   const storedChar = (await plugin.storage.getSynced('character')) as any;
-  if (!storedChar || !('hp' in storedChar)) {
+  if (!storedChar) {
     await plugin.storage.setSynced('character', { ...defaultCharacter });
     await plugin.storage.setSynced('activeEnemy', null);
   }
@@ -547,61 +537,15 @@ async function onActivate(plugin: ReactRNPlugin) {
   const questsRaw = (await plugin.storage.getSynced('questLog')) as Partial<QuestLogState> | undefined;
   await plugin.storage.setSynced('questLog', ensureQuestLog(questsRaw));
 
-  // --- Theme: register a dropdown setting and seed the synced storage ---
-  try {
-    await plugin.settings.registerDropdownSetting({
-      id: THEME_SETTING_ID,
-      title: 'Theme',
-      description:
-        'Choose between Dark, Light or E-Ink (high-contrast B/W for E-Ink readers like Boox / Viwoods). You can also switch from the panel header.',
-      defaultValue: DEFAULT_THEME_MODE,
-      options: [
-        { key: 'dark',  value: 'dark',  label: '\uD83C\uDF19 Dark' },
-        { key: 'light', value: 'light', label: '\u2600\uFE0F Light' },
-        { key: 'eink',  value: 'eink',  label: '\uD83D\uDCD6 E-Ink' },
-      ],
-    });
-  } catch {
-    /* registerDropdownSetting may already exist on hot-reload */
-  }
+  await plugin.app.registerWidget('character_panel', WidgetLocation.RightSidebar, {
+    dimensions: { height: 'auto', width: '100%' },
+    widgetTabIcon: `${plugin.rootURL ?? ''}ui/sidebar_icon.png`,
+    widgetTabTitle: 'World of Remcraft',
+  });
 
-  // Sync setting -> shared storage so widgets re-render.
-  const storedTheme = (await plugin.storage.getSynced(THEME_STORAGE_KEY)) as ThemeMode | undefined;
-  if (!storedTheme || !(storedTheme in THEMES)) {
-    let initial: ThemeMode = DEFAULT_THEME_MODE;
-    try {
-      const fromSetting = (await plugin.settings.getSetting(THEME_SETTING_ID)) as ThemeMode | undefined;
-      if (fromSetting && fromSetting in THEMES) initial = fromSetting;
-    } catch {
-      /* settings may not be ready yet */
-    }
-    await plugin.storage.setSynced(THEME_STORAGE_KEY, initial);
-  }
-
-  // Mirror setting changes into synced storage in real time.
-  try {
-    plugin.track(async (rp) => {
-      const value = (await rp.settings.getSetting(THEME_SETTING_ID)) as ThemeMode | undefined;
-      if (value && value in THEMES) {
-        const current = (await plugin.storage.getSynced(THEME_STORAGE_KEY)) as ThemeMode | undefined;
-        if (current !== value) {
-          await plugin.storage.setSynced(THEME_STORAGE_KEY, value);
-        }
-      }
-    });
-  } catch {
-    /* plugin.track may not be available on older SDKs */
-  }
-
-await plugin.app.registerWidget('character_panel', WidgetLocation.RightSidebar, {
-  dimensions: { height: 'auto', width: '100%' },
-  widgetTabIcon: `${plugin.rootURL ?? ''}ui/sidebar_icon.png`,
-  widgetTabTitle: 'World of Remcraft',
-});
-
-await plugin.app.registerWidget('battle_overlay', 'FlashcardUnder' as WidgetLocation, {
-  dimensions: { height: 'auto', width: '100%' },
-});
+  await plugin.app.registerWidget('battle_overlay', 'FlashcardUnder' as WidgetLocation, {
+    dimensions: { height: 'auto', width: '100%' },
+  });
 
   await plugin.event.addListener(
     AppEvents.QueueCompleteCard,
@@ -658,20 +602,18 @@ await plugin.app.registerWidget('battle_overlay', 'FlashcardUnder' as WidgetLoca
         applyQuestProgress(questLog.weeklies, 'use_xp_scroll_total', 1);
       }
 
-      const hpBonus = char.hp / char.maxHp > 0.7 ? 0.1 : 0;
-
       let xpGain = 0;
       if (isAgain) {
         xpGain = 0;
         char.goodStreak = 0;
       } else if (isHard) {
-        const mult = restedMult * scrollMult * (1 + hpBonus);
+        const mult = restedMult * scrollMult;
         xpGain = Math.round(baseXP * mult * 0.4);
         char.goodStreak = 0;
         applyQuestProgress(questLog.dailies, 'hard_total', 1);
         applyQuestProgress(questLog.weeklies, 'hard_total', 1);
       } else if (isGoodOrEasy) {
-        const mult = restedMult * scrollMult * (1 + hpBonus);
+        const mult = restedMult * scrollMult;
         xpGain = Math.round(baseXP * mult);
         char.goodStreak += 1;
         applyQuestProgress(questLog.dailies, 'good_easy_total', 1);
@@ -681,10 +623,6 @@ await plugin.app.registerWidget('battle_overlay', 'FlashcardUnder' as WidgetLoca
       if (!isAgain) {
         applyQuestProgress(questLog.dailies, 'no_again_total', 1);
         applyQuestProgress(questLog.weeklies, 'no_again_total', 1);
-      }
-
-      if (isEasy) {
-        char.hp = Math.min(char.maxHp, char.hp + 2);
       }
 
       if (char.level < 60) char.currentXP += xpGain;
@@ -710,40 +648,6 @@ await plugin.app.registerWidget('battle_overlay', 'FlashcardUnder' as WidgetLoca
       }
 
       enemy.currentHP -= playerDmg;
-
-      let dmg = 0;
-      if (isAgain) {
-        dmg = enemy.damage * 2;
-        char.hp = Math.max(0, char.hp - dmg);
-      } else if (isHard) {
-        dmg = enemy.damage;
-        char.hp = Math.max(0, char.hp - dmg);
-      }
-
-      if (dmg > 0) {
-        applyQuestProgress(questLog.dailies, 'take_damage_total', dmg);
-        applyQuestProgress(questLog.weeklies, 'take_damage_total', dmg);
-      }
-
-      if (char.hp === 0) {
-        const deathPenalty = Math.max(1, Math.round(xpForLevel(char.level) * 0.3));
-        char.currentXP -= deathPenalty;
-
-        if (char.currentXP < 0 && char.level > 1) {
-          const overflow = char.currentXP;
-          char.level -= 1;
-          char.maxHp = 100 + (char.level - 1) * 5;
-          char.currentXP = Math.max(0, xpForLevel(char.level) + overflow);
-          await plugin.app.toast(`💀 You died! -${deathPenalty} XP and lost 1 level.`);
-        } else {
-          char.currentXP = Math.max(0, char.currentXP);
-          await plugin.app.toast(`💀 You died! -${deathPenalty} XP.`);
-        }
-
-        char.maxHp = 100 + (char.level - 1) * 5;
-        char.hp = Math.max(30, Math.floor(char.maxHp * 0.5));
-        enemy = generateEnemy(char.level, false, computeZone(char.level));
-      }
 
       if (enemy.currentHP <= 0) {
         char.monstersDefeated += 1;
@@ -784,8 +688,6 @@ await plugin.app.registerWidget('battle_overlay', 'FlashcardUnder' as WidgetLoca
       while (char.level < 60 && char.currentXP >= xpForLevel(char.level)) {
         char.currentXP -= xpForLevel(char.level);
         char.level += 1;
-        char.maxHp = 100 + (char.level - 1) * 5;
-        char.hp = Math.min(char.hp, char.maxHp);
         await plugin.app.toast(
           `⚔️ LEVEL UP! Level ${char.level} – ${computeZone(char.level).name}!`
         );
