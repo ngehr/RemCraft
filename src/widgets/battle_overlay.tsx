@@ -8,8 +8,6 @@ interface CharacterState {
   cardsAnswered: number;
   monstersDefeated: number;
   elitesDefeated: number;
-  hp: number;
-  maxHp: number;
   silver: number;
   gold: number;
   streakDays: number;
@@ -54,8 +52,6 @@ const defaultCharacter: CharacterState = {
   cardsAnswered: 0,
   monstersDefeated: 0,
   elitesDefeated: 0,
-  hp: 100,
-  maxHp: 100,
   silver: 0,
   gold: 0,
   streakDays: 0,
@@ -96,11 +92,6 @@ function BattleOverlay() {
     100,
     xpNeeded > 0 ? Math.round((character.currentXP / xpNeeded) * 100) : 0
   );
-  const charHpPct = Math.min(
-    100,
-    character.maxHp > 0 ? Math.round((character.hp / character.maxHp) * 100) : 0
-  );
-  const hpColor = charHpPct > 60 ? '#4ade80' : charHpPct > 30 ? '#facc15' : '#ef4444';
   const restedLeft = Math.max(0, RESTED_XP_CARDS - character.restedXPUsed);
 
   return (
@@ -137,6 +128,7 @@ function BattleOverlay() {
             overflow: 'hidden',
           }}
         >
+          {/* Player side – no HP */}
           <div
             style={{
               display: 'flex',
@@ -181,29 +173,6 @@ function BattleOverlay() {
 
               <div
                 style={{
-                  background: '#3a0000',
-                  borderRadius: '4px',
-                  height: '6px',
-                  marginTop: '4px',
-                }}
-              >
-                <div
-                  style={{
-                    width: `${charHpPct}%`,
-                    background: `linear-gradient(90deg,#7f1d1d,${hpColor})`,
-                    borderRadius: '4px',
-                    height: '100%',
-                    transition: 'width 0.2s',
-                  }}
-                />
-              </div>
-
-              <div style={{ fontSize: '10px', color: hpColor, marginTop: '4px' }}>
-                ❤️ {character.hp}/{character.maxHp}
-              </div>
-
-              <div
-                style={{
                   background: '#333',
                   borderRadius: '4px',
                   height: '6px',
@@ -236,6 +205,7 @@ function BattleOverlay() {
             }}
           />
 
+          {/* Enemy side */}
           <div
             style={{
               display: 'flex',
